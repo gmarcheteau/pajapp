@@ -3,6 +3,7 @@ package com.bigotapps.pajapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,9 +29,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 * Minimum delay between sensor readings
 	 * To avoid conflicts 
 	 */
-	public long lastSensorUpdate = 0;
-	public long delay =0;
+	public long lastSensorUpdate = 1;
+	public long delay =1;
+	public float frequency=1;
+	public float frequency_previous=1;
 	public long minDelay = 10;
+	public long timeSinceLastChange=300;
 	
 	/**
 	 * PajaMetrics
@@ -38,10 +42,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean RIGHT_HAND=true;
 	public boolean IS_DOWN;
 	public int distance = 0;
-	public int targetDistance = 60;
+	public int targetDistance = 50;
 	public int countSlow=1;
 	public int countFast=1;
 	public int countVeryFast=1;
+	public float progress=0;
+	public float progressGoal=300;
 	
 	/**TIMING 
 	 */
@@ -107,63 +113,71 @@ public class MainActivity extends Activity implements SensorEventListener {
 		
 		// check last sensor update action
 		delay=System.currentTimeMillis()-lastSensorUpdate;
+		
+		//graphic element handlers
 		View back= findViewById(R.id.relLayout);
 		View hand = findViewById(R.id.imageView1);
 		TextView dist = (TextView) findViewById(R.id.textViewDistance);
 		TextView slow = (TextView) findViewById(R.id.TextViewSlow);
 		TextView fast = (TextView) findViewById(R.id.TextViewFast);
 		
-		//if Paja is completed
-		if(distance==targetDistance){
-			endPaja(); //should pass parameters (paja score, etc)
-		}
-		
-		else{
-		
 			if(delay>minDelay){
-				//UP
-				if(event.values[1]<sensorSensitivity){
-							//hand up
-					hand.scrollTo(0, 150);
-					lastSensorUpdate=System.currentTimeMillis();
-					IS_DOWN=false;
+				
+				//if Paja is not completed
+				if(progress<progressGoal){
+				
+				if(event.values[1]<0){//hand up
+					if(IS_DOWN){
+						hand.scrollTo(0, 150);
+						lastSensorUpdate=System.currentTimeMillis();
+						IS_DOWN=false;
 						}
-				else{
-					//hand down
+					}
+				else if(event.values[1]>sensorSensitivity){ //hand down
 					if(!IS_DOWN){
+						progress=getProgress();
+						frequency=500/(timeSinceLastChange);//should avoid dividing by 0
+						
 						hand.scrollTo(0, -150);
 						distance++;
-						dist.setText(Integer.toString(distance));
+						dist.setText(Float.toString(progress));
 						IS_DOWN=true;
 						lastSensorUpdate=System.currentTimeMillis();
 						
 						//rythm
-						long timeSinceLastChange=System.currentTimeMillis()-lastChange;
+						timeSinceLastChange=System.currentTimeMillis()-lastChange;
 						
 						if(distance>3 && timeSinceLastChange<180){ //VERY FAST
 							fast.setVisibility(View.INVISIBLE);
 							slow.setVisibility(View.INVISIBLE);
-							back.setBackgroundColor(getResources().getColor(R.color.bigRed));
+							//back.setBackgroundColor(getResources().getColor(R.color.bigRed));
 							countVeryFast++;}
 						else if(distance>3 && timeSinceLastChange<300){ //FAST
 							fast.setVisibility(View.VISIBLE);
 							slow.setVisibility(View.INVISIBLE);
-							back.setBackgroundColor(getResources().getColor(R.color.bigWhite));
+							//back.setBackgroundColor(getResources().getColor(R.color.bigWhite));
 							countFast++;}
 						else if(distance>3 && timeSinceLastChange>450){ //SLOW
 							slow.setVisibility(View.VISIBLE);
 							fast.setVisibility(View.INVISIBLE);
-							back.setBackgroundColor(getResources().getColor(R.color.bigBlue));
+							//back.setBackgroundColor(getResources().getColor(R.color.bigBlue));
 							countSlow++;}
-						else {back.setBackgroundColor(getResources().getColor(R.color.bigWhite));}
+						//else {back.setBackgroundColor(getResources().getColor(R.color.bigWhite));}
 						
+						back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
 						
 						lastChange=System.currentTimeMillis();
+
 						}
-				 	}
-				
+					frequency_previous=frequency; 	
+				} //end of hand down
 			}
+				else endPaja(); //Paja is ended, score computed etc.	
+				
+			
 		}
+		
+		
 	}
 			   
     public void changeHands(){
@@ -175,6 +189,17 @@ public class MainActivity extends Activity implements SensorEventListener {
     		{iv.setImageResource(R.drawable.openhandright);}
     	
     	RIGHT_HAND=!RIGHT_HAND;
+    }
+    
+    public float getProgress(){
+    	//long frequencyVar =1;
+    	float frequencyVar;
+    	if(frequency==frequency_previous) {frequencyVar=1;quickToast("equal freqs");}
+    		else frequencyVar =(frequency/(frequency_previous)-1);
+    	if (frequencyVar>0) {progress+=Math.min(100,frequency*(frequencyVar));}
+    		else if(frequencyVar<0) {progress+=Math.max(-50,timeSinceLastChange/1000*(frequencyVar));quickToast("slowind down");}
+    	 
+    	return progress;
     }
     
 	public int getScore(){
