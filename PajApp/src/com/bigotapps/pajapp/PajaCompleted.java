@@ -57,6 +57,11 @@ public class PajaCompleted extends Activity {
 	    	Intent i = new Intent(getApplicationContext(),MainActivity.class);
 			startActivity(i);
 	    }
+	 
+	 public void WoF(View v){
+	    	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
+			startActivity(i);
+	    }
 	
 	 /* QuickToaster
 	 * for runtime debugging etc 

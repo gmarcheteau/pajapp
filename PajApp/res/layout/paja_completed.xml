@@ -11,7 +11,7 @@
         android:layout_above="@+id/imageView1"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
-        android:text="Large Text"
+        android:text=" "
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/bigRed"
         android:textSize="50sp" />
@@ -25,7 +25,7 @@
         android:background="@color/bigRed" >
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/imageButtonNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -35,14 +35,23 @@
             android:src="@android:drawable/ic_menu_revert" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/imageButtonShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/imageButton1"
+            android:layout_alignTop="@+id/imageButtonNew"
             android:layout_marginRight="68dp"
             android:onClick="sharePaja"
             android:src="@android:drawable/sym_action_chat" />
+
+        <ImageButton
+            android:id="@+id/ImageButtonWoF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageButtonNew"
+            android:layout_centerHorizontal="true"
+            android:onClick="newPaja"
+            android:src="@android:drawable/btn_star" />
 
     </RelativeLayout>
 
