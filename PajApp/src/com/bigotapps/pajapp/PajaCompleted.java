@@ -15,10 +15,15 @@ public class PajaCompleted extends Activity {
 	public long[] pattern = {10,1000,100,1000,100,1000};
 	String score;
 	String duration;
+
+	
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.paja_completed);
+		
+
+		
 		
 		// Get instance of Vibrator from current Context
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -59,8 +64,11 @@ public class PajaCompleted extends Activity {
 	    }
 	 
 	 public void WoF(View v){
-	    	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
-			startActivity(i);
+		 	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
+		 	i.putExtra("score", score);
+		 	i.putExtra("duration", duration);
+		 	//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
+		 	startActivity(i);
 	    }
 	
 	 /* QuickToaster

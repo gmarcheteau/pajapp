@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean RIGHT_HAND=true;
 	public boolean IS_DOWN;
 	public int distance = 0;
-	public int targetDistance = 50;
+	public int targetDistance = 60;
 	public int countSlow=1;
 	public int countFast=1;
 	public int countVeryFast=1;
@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 						//rythm
 						long timeSinceLastChange=System.currentTimeMillis()-lastChange;
 						
-						if(distance>3 && timeSinceLastChange<200){ //VERY FAST
+						if(distance>3 && timeSinceLastChange<180){ //VERY FAST
 							fast.setVisibility(View.INVISIBLE);
 							slow.setVisibility(View.INVISIBLE);
 							back.setBackgroundColor(getResources().getColor(R.color.bigRed));
@@ -150,7 +150,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 							slow.setVisibility(View.INVISIBLE);
 							back.setBackgroundColor(getResources().getColor(R.color.bigWhite));
 							countFast++;}
-						else if(distance>3 && timeSinceLastChange>500){ //SLOW
+						else if(distance>3 && timeSinceLastChange>450){ //SLOW
 							slow.setVisibility(View.VISIBLE);
 							fast.setVisibility(View.INVISIBLE);
 							back.setBackgroundColor(getResources().getColor(R.color.bigBlue));
@@ -178,10 +178,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     
 	public int getScore(){
-		int coeff_Slow=2;
-		int coeff_Fast=1;
-		int coeff_VeryFast=3;
-		int coeff_Duration=1;
+		float coeff_Slow=3;
+		float coeff_Fast=3;
+		float coeff_VeryFast=1;
+		float coeff_Duration=3;
 		return Math.round(
 				countSlow*coeff_Slow*
 				countFast*coeff_Fast*
