@@ -41,19 +41,21 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	public boolean RIGHT_HAND=true;
 	public boolean IS_DOWN;
-	public int distance = 0;
-	public int targetDistance = 50;
+	public int golpes = 0;
+	public int targetGolpes = 50;
 	public int countSlow=1;
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal=300;
+	public float progressGoal=50;
+	public int freqCoeff=1;
+	public float avFreq=1;
 	
 	/**TIMING 
 	 */
 	public boolean PAJA_STARTED = false;
 	public long startTime;
-	public long duration;
+	public long duration=1;
 	public long lastChange;
 	
 	
@@ -77,9 +79,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 		case R.id.change_hand:
-			//action
 			changeHands();
 			return true ;
+		case R.id.action_settings:
+			goSettings();
+			return true ;
+		
 		default:
 			return false;
 		}
@@ -95,7 +100,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	  @Override
 	  protected void onPause() {
 	    super.onPause();
-	    distance=0;
+	    golpes=0;
 	    mSensorManager.unregisterListener(this);
 	  }
 
@@ -106,18 +111,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		
 		if(!PAJA_STARTED){
 			startTime=System.currentTimeMillis();
 			PAJA_STARTED=true;
 		}
-		
+		else{
 		// check last sensor update action
 		delay=System.currentTimeMillis()-lastSensorUpdate;
 		
 		//graphic element handlers
 		View back= findViewById(R.id.relLayout);
 		View hand = findViewById(R.id.imageView1);
-		TextView dist = (TextView) findViewById(R.id.textViewDistance);
+		TextView dist = (TextView) findViewById(R.id.textViewProgress);
 		TextView slow = (TextView) findViewById(R.id.TextViewSlow);
 		TextView fast = (TextView) findViewById(R.id.TextViewFast);
 		
@@ -133,48 +139,50 @@ public class MainActivity extends Activity implements SensorEventListener {
 						IS_DOWN=false;
 						}
 					}
+				
 				else if(event.values[1]>sensorSensitivity){ //hand down
 					if(!IS_DOWN){
-						progress=getProgress();
-						frequency=500/(timeSinceLastChange);//should avoid dividing by 0
-						
 						hand.scrollTo(0, -150);
-						distance++;
-						dist.setText(Float.toString(progress));
+						golpes++;
+						timeSinceLastChange=System.currentTimeMillis()-lastChange;
+						
+						frequency=1000/(timeSinceLastChange);//should avoid dividing by 0
+						progress=getProgress(); 
+						
+						dist.setText(Integer.toString(Math.round(progress)));
 						IS_DOWN=true;
 						lastSensorUpdate=System.currentTimeMillis();
 						
-						//rythm
-						timeSinceLastChange=System.currentTimeMillis()-lastChange;
-						
-						if(distance>3 && timeSinceLastChange<180){ //VERY FAST
-							fast.setVisibility(View.INVISIBLE);
-							slow.setVisibility(View.INVISIBLE);
+						//rythm. Still being used to compute the QualityScore
+										
+						if(golpes>3 && timeSinceLastChange<180){ //VERY FAST
+					//		fast.setVisibility(View.INVISIBLE);
+					//		slow.setVisibility(View.INVISIBLE);
 							//back.setBackgroundColor(getResources().getColor(R.color.bigRed));
 							countVeryFast++;}
-						else if(distance>3 && timeSinceLastChange<300){ //FAST
-							fast.setVisibility(View.VISIBLE);
-							slow.setVisibility(View.INVISIBLE);
+						else if(golpes>3 && timeSinceLastChange<300){ //FAST
+					//		fast.setVisibility(View.VISIBLE);
+					//		slow.setVisibility(View.INVISIBLE);
 							//back.setBackgroundColor(getResources().getColor(R.color.bigWhite));
 							countFast++;}
-						else if(distance>3 && timeSinceLastChange>450){ //SLOW
-							slow.setVisibility(View.VISIBLE);
-							fast.setVisibility(View.INVISIBLE);
+						else if(golpes>3 && timeSinceLastChange>450){ //SLOW
+					//		slow.setVisibility(View.VISIBLE);
+					//		fast.setVisibility(View.INVISIBLE);
 							//back.setBackgroundColor(getResources().getColor(R.color.bigBlue));
 							countSlow++;}
 						//else {back.setBackgroundColor(getResources().getColor(R.color.bigWhite));}
 						
+						//RGB background update
 						back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
 						
 						lastChange=System.currentTimeMillis();
 
-						}
-					frequency_previous=frequency; 	
+						} 	
 				} //end of hand down
 			}
 				else endPaja(); //Paja is ended, score computed etc.	
 				
-			
+			}
 		}
 		
 		
@@ -192,13 +200,26 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     
     public float getProgress(){
-    	//long frequencyVar =1;
-    	float frequencyVar;
-    	if(frequency==frequency_previous) {frequencyVar=1;quickToast("equal freqs");}
-    		else frequencyVar =(frequency/(frequency_previous)-1);
-    	if (frequencyVar>0) {progress+=Math.min(100,frequency*(frequencyVar));}
-    		else if(frequencyVar<0) {progress+=Math.max(-50,timeSinceLastChange/1000*(frequencyVar));quickToast("slowind down");}
-    	 
+    	duration=(System.currentTimeMillis()-startTime)/1000;
+    	avFreq=golpes/duration;
+    	
+    	
+    	// frequency coeff
+    	if(frequency>0.5*avFreq){freqCoeff=+1;} //if acceleration (at least 20%)
+    	else if (frequency<avFreq){freqCoeff=-1;} //if deceleration (at least 20%)
+    	//else if (freqCoeff=2; //if more or less stable, bonus
+    	
+    	//quickToast(Float.toString(freqCoeff));
+    	
+    	if (freqCoeff<0){
+    		progress+=freqCoeff*timeSinceLastChange*1/300;
+    	}
+    	
+    	else 
+    		{
+    		progress+=frequency*freqCoeff*1/10;
+    		}
+    	progress=Math.max(progress,0);
     	return progress;
     }
     
@@ -224,6 +245,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 		i.putExtra("duration", String.valueOf(duration));
 		startActivity(i);
     }
+    
+ public void goSettings(){
+		
+		mSensorManager.unregisterListener(this);
+		
+    	Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+		i.putExtra("score", String.valueOf(getScore()));
+		i.putExtra("duration", String.valueOf(duration));
+		startActivity(i);
+    }
+    
     
     /**
 	 * QuickToaster
