@@ -190,19 +190,22 @@ containing a value of this type.
         public static final int openhandright=0x7f02001c;
         public static final int pajawon=0x7f02001d;
         public static final int stars=0x7f02001e;
+        public static final int whatsapp_logo=0x7f02001f;
+        public static final int whatsapp_logo_small=0x7f020020;
     }
     public static final class id {
-        public static final int ImageButtonWoF=0x7f06000f;
-        public static final int TextView01=0x7f060012;
-        public static final int TextViewCurrentScore=0x7f060013;
+        public static final int ImageButtonWhatsapp=0x7f060010;
+        public static final int ImageButtonWoF=0x7f06000e;
+        public static final int TextView01=0x7f060014;
+        public static final int TextViewCurrentScore=0x7f060015;
         public static final int TextViewFast=0x7f060009;
         public static final int TextViewSlow=0x7f060008;
-        public static final int TextViewTopScore=0x7f060014;
-        public static final int action_settings=0x7f060015;
-        public static final int change_hand=0x7f060016;
+        public static final int TextViewTopScore=0x7f060016;
+        public static final int action_settings=0x7f060017;
+        public static final int change_hand=0x7f060018;
         public static final int hybrid=0x7f060004;
         public static final int imageButtonNew=0x7f06000d;
-        public static final int imageButtonShare=0x7f06000e;
+        public static final int imageButtonShare=0x7f06000f;
         public static final int imageView1=0x7f060006;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
@@ -210,9 +213,10 @@ containing a value of this type.
         public static final int relLayoutComp=0x7f06000a;
         public static final int relLayoutSharing=0x7f06000c;
         public static final int satellite=0x7f060002;
-        public static final int sign_in_button=0x7f060010;
+        public static final int share_gplus=0x7f060011;
+        public static final int sign_in_button=0x7f060012;
         public static final int terrain=0x7f060003;
-        public static final int textView2=0x7f060011;
+        public static final int textView2=0x7f060013;
         public static final int textViewProgress=0x7f060007;
         public static final int textViewScore=0x7f06000b;
     }

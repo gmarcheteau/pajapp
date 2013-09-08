@@ -30,28 +30,40 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="66dp"
+            android:layout_marginLeft="28dp"
             android:onClick="newPaja"
             android:src="@android:drawable/ic_menu_revert" />
-
-        <ImageButton
-            android:id="@+id/imageButtonShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/imageButtonNew"
-            android:layout_marginRight="68dp"
-            android:onClick="sharePaja"
-            android:src="@android:drawable/sym_action_chat" />
 
         <ImageButton
             android:id="@+id/ImageButtonWoF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imageButtonNew"
-            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/imageButtonNew"
             android:onClick="WoF"
             android:src="@android:drawable/btn_star" />
+
+        <ImageButton
+            android:id="@+id/imageButtonShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ImageButtonWoF"
+            android:layout_alignTop="@+id/ImageButtonWoF"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/ImageButtonWoF"
+            android:onClick="mailPaja"
+            android:src="@android:drawable/sym_action_email" />
+
+        <ImageButton
+            android:id="@+id/ImageButtonWhatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageButtonShare"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/imageButtonShare"
+            android:onClick="onClickWhatsApp"
+            android:src="@drawable/whatsapp_logo_small" />
 
     </RelativeLayout>
 
@@ -62,5 +74,15 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:src="@drawable/pajawon" />
+
+    <Button
+        android:id="@+id/share_gplus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relLayoutSharing"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:onClick="gplusShare"
+        android:text="Share on Google+" />
 
 </RelativeLayout>

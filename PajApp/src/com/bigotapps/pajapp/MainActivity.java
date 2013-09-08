@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MainActivity extends Activity implements SensorEventListener {
 
 
@@ -47,7 +48,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal=50;
+	public float progressGoal=10;
 	public int freqCoeff=1;
 	public float avFreq=1;
 	
@@ -62,10 +63,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		  super.onCreate(savedInstanceState);
+	
 		setContentView(R.layout.activity_main);
 		
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+	
+		if(this.getIntent().getExtras() != null){
+			//when user is coming from deep-linking
+			String message=this.getIntent().getExtras().getString("message");
+			quickToast(message);
+		}
 		
 	}
 
