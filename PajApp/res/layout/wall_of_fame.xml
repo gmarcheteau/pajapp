@@ -8,11 +8,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="88dp"
-        android:text="Current Score"
+        android:text="Latest Score"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/TextShareWith"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
@@ -25,7 +25,8 @@
         android:id="@+id/TextViewCurrentScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/TextView01"
+        android:layout_above="@+id/TextShareWith"
+        android:layout_alignTop="@+id/textView2"
         android:layout_marginLeft="44dp"
         android:layout_toRightOf="@+id/textView2"
         android:text="cS"
@@ -35,8 +36,8 @@
         android:id="@+id/TextViewTopScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/TextView01"
-        android:layout_alignBottom="@+id/TextView01"
+        android:layout_alignBaseline="@+id/TextShareWith"
+        android:layout_alignBottom="@+id/TextShareWith"
         android:layout_alignLeft="@+id/TextViewCurrentScore"
         android:text="tS"
         android:textAppearance="?android:attr/textAppearanceMedium" />

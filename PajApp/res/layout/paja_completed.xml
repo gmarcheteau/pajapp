@@ -4,18 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/textViewScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/imageView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="22dp"
-        android:text=" "
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigRed"
-        android:textSize="50sp" />
-
     <RelativeLayout
         android:id="@+id/relLayoutSharing"
         android:layout_width="fill_parent"
@@ -25,45 +13,24 @@
         android:background="@color/bigRed" >
 
         <ImageButton
-            android:id="@+id/imageButtonNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="28dp"
-            android:onClick="newPaja"
-            android:src="@android:drawable/ic_menu_revert" />
-
-        <ImageButton
             android:id="@+id/ImageButtonWoF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/imageButtonNew"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/imageButtonNew"
+            android:layout_marginRight="74dp"
             android:onClick="WoF"
             android:src="@android:drawable/btn_star" />
 
         <ImageButton
-            android:id="@+id/imageButtonShare"
+            android:id="@+id/imageButtonNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ImageButtonWoF"
-            android:layout_alignTop="@+id/ImageButtonWoF"
-            android:layout_marginLeft="14dp"
-            android:layout_toRightOf="@+id/ImageButtonWoF"
-            android:onClick="mailPaja"
-            android:src="@android:drawable/sym_action_email" />
-
-        <ImageButton
-            android:id="@+id/ImageButtonWhatsapp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButtonShare"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/imageButtonShare"
-            android:onClick="onClickWhatsApp"
-            android:src="@drawable/whatsapp_logo_small" />
+            android:layout_centerVertical="true"
+            android:layout_marginRight="56dp"
+            android:layout_toLeftOf="@+id/ImageButtonWoF"
+            android:onClick="newPaja"
+            android:src="@android:drawable/ic_menu_revert" />
 
     </RelativeLayout>
 
@@ -71,18 +38,74 @@
         android:id="@+id/imageView1"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/pajawon" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/fist2" />
 
-    <Button
-        android:id="@+id/share_gplus"
+    <ImageButton
+        android:id="@+id/ImageButtonWhatsapp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/relLayoutSharing"
+        android:layout_alignTop="@+id/gPlusShareButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:background="@color/bigWhite"
+        android:onClick="onClickWhatsApp"
+        android:src="@drawable/whatsapp_logo_small" />
+
+    <ImageButton
+        android:id="@+id/imageButtonShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ImageButtonWhatsapp"
+        android:layout_toLeftOf="@+id/textViewScore"
+        android:background="@color/bigRed"
+        android:onClick="mailPaja"
+        android:src="@android:drawable/sym_action_email" />
+
+    <TextView
+        android:id="@+id/textViewScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="score"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigRed"
+        android:textSize="50sp" />
+
+    <ImageButton
+        android:id="@+id/gPlusShareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_toRightOf="@+id/textViewScore"
+        android:background="@color/bigWhite"
         android:onClick="gplusShare"
-        android:text="Share on Google+" />
+        android:src="@drawable/gplusicon_small" />
+
+    <TextView
+        android:id="@+id/TextShareWith"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
+        android:text="Share with:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigRed"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/TextNewHighScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewScore"
+        android:layout_centerHorizontal="true"
+        android:text="NEW HIGH SCORE!"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigRed"
+        android:textSize="30sp"
+        android:visibility="invisible" />
 
 </RelativeLayout>

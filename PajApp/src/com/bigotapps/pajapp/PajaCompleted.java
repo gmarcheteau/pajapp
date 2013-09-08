@@ -5,13 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,8 @@ import com.google.android.gms.plus.PlusShare;
 public class PajaCompleted extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
 
 	public long[] pattern = {10,1000,100,1000,100,1000};
-	String score;
+	Long score;
+	Long topScore;
 	String duration;
 
     private static final String TAG = "ExampleActivity";
@@ -36,7 +38,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
     
-    public Button mShareButton; 
+    public ImageButton mShareButton; 
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,29 +47,34 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		 mPlusClient = new PlusClient.Builder(this, this, this).build();
          mPlusClient.connect();
 
-		 mShareButton = (Button) findViewById(R.id.share_gplus);
+		 mShareButton = (ImageButton) findViewById(R.id.gPlusShareButton);
+		 
+		//shared preferences, to store Best Scores and stuff
+			SharedPreferences prefs = this.getSharedPreferences(
+				      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
 		
 		// Get instance of Vibrator from current Context
 		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		 
-		// Vibrate according to pattern (-1 means don't repeat)
-		v.vibrate(pattern,-1);
-
-		
-		playSound();
 		
 		if(this.getIntent().getExtras() != null){
 			//use paja parameters
-			score = this.getIntent().getExtras().getString("score");
+			score = Long.valueOf(this.getIntent().getExtras().getString("score"));
 			duration = this.getIntent().getExtras().getString("duration");
 			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
 			scoreView.setText(score+" pts");
 			quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
 		}
 		
+		//retrieve topScore and update if relevant
+				topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
+				if(score>topScore){
+			 		topScore=updateTopScore(prefs, score);
+			 		findViewById(R.id.TextNewHighScore).setVisibility(View.VISIBLE);
+			 	}
 		
-		
-		
+		// Vibrate according to pattern (-1 means don't repeat)
+				v.vibrate(pattern,-1);
+				playSound();
 	}
 	
 	@Override
@@ -87,7 +94,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		intent.setType("text/html");
 		intent.putExtra(Intent.EXTRA_SUBJECT, "Te env’an una paja");
 		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraci—n: "+duration+"s \nScore: "+score+" pts");
-		startActivity(Intent.createChooser(intent, "Send Email"));
+		startActivity(Intent.createChooser(intent, "Share Paja"));
 	}
 	
 	public void onClickWhatsApp(View view) {
@@ -114,7 +121,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	 
 	 public void WoF(View v){
 		 	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
-		 	i.putExtra("score", score);
+		 	i.putExtra("score", Long.toString(score));
 		 	i.putExtra("duration", duration);
 		 	//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
 		 	startActivity(i);
@@ -199,6 +206,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			toast.show();
 	 }
 	
+	public Long updateTopScore(SharedPreferences prefs, Long newTopScore){
+		prefs.edit().putLong("com.bigotapps.pajapp.topscore", newTopScore).commit();
+		return newTopScore;
+	}
 	
 }
 

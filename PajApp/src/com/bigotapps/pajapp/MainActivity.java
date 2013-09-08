@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal=10;
+	public float progressGoal=30;
 	public int freqCoeff=1;
 	public float avFreq=1;
 	
