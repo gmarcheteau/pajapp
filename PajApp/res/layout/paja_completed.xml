@@ -35,7 +35,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/ImageBadgeScore"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_alignParentBottom="true"
@@ -78,7 +78,7 @@
         android:id="@+id/gPlusShareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView1"
+        android:layout_alignTop="@+id/ImageBadgeScore"
         android:layout_toRightOf="@+id/textViewScore"
         android:background="@color/bigWhite"
         android:onClick="gplusShare"
@@ -88,7 +88,7 @@
         android:id="@+id/TextShareWith"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/imageView1"
+        android:layout_above="@+id/ImageBadgeScore"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="14dp"
         android:text="Share with:"

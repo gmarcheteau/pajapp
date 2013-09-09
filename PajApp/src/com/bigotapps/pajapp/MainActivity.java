@@ -3,6 +3,7 @@ package com.bigotapps.pajapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -63,8 +64,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		  super.onCreate(savedInstanceState);
 	
 		setContentView(R.layout.activity_main);
 		
@@ -76,6 +75,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 			String message=this.getIntent().getExtras().getString("message");
 			quickToast(message);
 		}
+		//initialize pref file if new
+		initNewUser();
 		
 	}
 
@@ -94,7 +95,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.action_settings:
 			goSettings();
 			return true ;
-		
+		case R.id.view_badges:
+			goBadges();
+			return true ;
 		default:
 			return false;
 		}
@@ -102,13 +105,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 	@Override
-	  protected void onResume() {
+	protected void onResume() {
 	    super.onResume();
 	    mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 	  }
 
 	  @Override
-	  protected void onPause() {
+	protected void onPause() {
 	    super.onPause();
 	    golpes=0;
 	    mSensorManager.unregisterListener(this);
@@ -132,7 +135,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		
 		//graphic element handlers
 		View back= findViewById(R.id.relLayout);
-		View hand = findViewById(R.id.imageView1);
+		View hand = findViewById(R.id.ImageBadgeScore);
 		TextView dist = (TextView) findViewById(R.id.textViewProgress);
 		TextView slow = (TextView) findViewById(R.id.TextViewSlow);
 		TextView fast = (TextView) findViewById(R.id.TextViewFast);
@@ -199,7 +202,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 			   
     public void changeHands(){
-    	View hand = findViewById(R.id.imageView1);
+    	View hand = findViewById(R.id.ImageBadgeScore);
     	ImageView iv = (ImageView) hand;
     	if(RIGHT_HAND){
     		iv.setImageResource(R.drawable.openhandleft);}
@@ -250,6 +253,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				/100);
 	}
     
+    //endPaja: aqui tenemos que pasar mas parametros para temas de achievements etc.
     public void endPaja(){
 		
 		mSensorManager.unregisterListener(this);
@@ -257,6 +261,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     	Intent i = new Intent(getApplicationContext(),PajaCompleted.class);
 		i.putExtra("score", String.valueOf(getScore()));
 		i.putExtra("duration", String.valueOf(duration));
+		i.putExtra("golpes", String.valueOf(golpes));
+		quickToast(String.valueOf(duration));
 		startActivity(i);
     }
     
@@ -269,6 +275,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 		i.putExtra("duration", String.valueOf(duration));
 		startActivity(i);
     }
+ 
+ public void goBadges(){
+		
+		mSensorManager.unregisterListener(this);
+
+		Intent i = new Intent(getApplicationContext(),WallOfFame.class);
+		startActivity(i);
+ }
     
     
     /**
@@ -281,6 +295,29 @@ public class MainActivity extends Activity implements SensorEventListener {
 		Toast toast = Toast.makeText(context, message, duration);
 		toast.show();	
 	}
-}
+
+
+	public void initNewUser(){
+		SharedPreferences prefs = this.getSharedPreferences(
+			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
+		boolean IS_NEW=prefs.getBoolean("com.bigotapps.pajapp.isnew", true);
+		if(IS_NEW){
+			//initialize achievements etc.
+			prefs.edit().putBoolean("com.bigotapps.pajapp.isnew", false).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeScore_unlocked", false).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeDuration_unlocked", false).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", false).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", false).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.badgeScore_progress", 0).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.badgeGolpes_progress", 0).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.badgeDuration_progress", 0).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.hasshared", false).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.topgolpes", 0).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.topscore", 0).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.topduration", 0).commit();
+		}
+				
+	}
 	
 
+}

@@ -11,7 +11,7 @@
     tools:context=".MainActivity" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/ImageBadgeScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -33,7 +33,7 @@
         android:id="@+id/TextViewSlow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignBottom="@+id/ImageBadgeScore"
         android:layout_alignParentLeft="true"
         android:text="SLOW"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -45,7 +45,7 @@
         android:id="@+id/TextViewFast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignBottom="@+id/ImageBadgeScore"
         android:layout_alignParentRight="true"
         android:text="FAST"
         android:textAppearance="?android:attr/textAppearanceLarge"

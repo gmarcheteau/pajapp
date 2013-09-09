@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +16,10 @@ public class WallOfFame extends Activity {
 	Long currentScore;
 	Long topScore;
 	String duration;
-	
+	boolean badgeScore_unlocked=false;
+    boolean badgeDuration_unlocked=false;
+    boolean badgeGolpes_unlocked=false;
+    boolean badgeShare_unlocked=false;
 	
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,26 +30,36 @@ public class WallOfFame extends Activity {
 				SharedPreferences prefs = this.getSharedPreferences(
 					      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
 		
-		//get intent parameters
-		if(this.getIntent().getExtras() != null){
-			currentScore = Long.valueOf(this.getIntent().getExtras().getString("score"));
-			duration = this.getIntent().getExtras().getString("duration");
-			}
 		
-		//retrieve topScore
-		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
-		//update topScore if relevant
-	 	
-		if(currentScore>topScore){
-	 		topScore=updateTopScore(prefs, currentScore);
-	 		quickToast("NEW TOP SCORE!");
-	 	}
+		//retrieve all user datetopScore
+		fetchUserData(prefs);
+		
 	 	
 	 	//update values being displayed
-		TextView currentScoreView = (TextView) findViewById(R.id.TextViewCurrentScore);
+	/*	TextView currentScoreView = (TextView) findViewById(R.id.TextViewCurrentScore);
 		currentScoreView.setText(currentScore+" pts");
 		TextView topScoreView = (TextView) findViewById(R.id.TextViewTopScore);
 		topScoreView.setText(topScore+" pts");
+	*/
+		//adjust visibility of badges
+		ImageView badgeDuration = (ImageView) findViewById(R.id.ImageBadgeDuration);
+		ImageView badgeScore = (ImageView) findViewById(R.id.ImageBadgeScore);
+		ImageView badgeGolpes = (ImageView) findViewById(R.id.ImageBadgeGolpes);
+		ImageView badgeShare = (ImageView) findViewById(R.id.ImageBadgeShare);
+		
+		if(!badgeScore_unlocked){
+			badgeScore.setVisibility(View.INVISIBLE);
+		}
+		if(!badgeDuration_unlocked){
+			badgeDuration.setVisibility(View.INVISIBLE);
+		}
+		if(!badgeGolpes_unlocked){
+			badgeGolpes.setVisibility(View.INVISIBLE);
+		}
+		if(!badgeShare_unlocked){
+			badgeShare.setVisibility(View.INVISIBLE);	
+		}
+		
 }
 	
 	public Long updateTopScore(SharedPreferences prefs, Long newTopScore){
@@ -62,6 +77,14 @@ public class WallOfFame extends Activity {
 			Toast toast = Toast.makeText(context, message, duration);
 			toast.show();
 	 }
+
+public void fetchUserData(SharedPreferences prefs){
+	topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
+	badgeScore_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeScore_unlocked", false);
+	badgeDuration_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeDuration_unlocked", false);
+	badgeGolpes_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", false);
+	badgeShare_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeShare_unlocked", false);
+}
 }
 
 	

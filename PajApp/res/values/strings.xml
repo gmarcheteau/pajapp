@@ -3,8 +3,8 @@
 
     <string name="app_name">PajApp beta</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="change_hand">Change hand</string>
+    <string name="view_badges">View badges</string>
     <string name="app_id">298577350281191</string>
 
 </resources>

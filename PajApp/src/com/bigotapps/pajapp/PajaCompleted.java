@@ -1,5 +1,6 @@
 package com.bigotapps.pajapp;
 
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,9 +28,19 @@ import com.google.android.gms.plus.PlusShare;
 public class PajaCompleted extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
 
 	public long[] pattern = {10,1000,100,1000,100,1000};
-	Long score;
-	Long topScore;
-	String duration;
+	Integer score;
+	long topScore;
+	long topGolpes;
+	long topDuration;
+	boolean hasShared;
+	boolean hasSharedPref;
+	long duration;
+	long golpes;
+	
+	Integer badgeScoreTarget=100000;
+	Integer badgeDurationTarget=60;
+	boolean badgeShareTarget=false;
+	Integer badgeGolpesTarget=200;
 
     private static final String TAG = "ExampleActivity";
     private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
@@ -58,23 +69,23 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		
 		if(this.getIntent().getExtras() != null){
 			//use paja parameters
-			score = Long.valueOf(this.getIntent().getExtras().getString("score"));
-			duration = this.getIntent().getExtras().getString("duration");
+			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
+			duration = Long.valueOf(this.getIntent().getExtras().getString("duration"));
+			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
 			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
 			scoreView.setText(score+" pts");
-			quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
+			
+			//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
 		}
 		
-		//retrieve topScore and update if relevant
-				topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
-				if(score>topScore){
-			 		topScore=updateTopScore(prefs, score);
-			 		findViewById(R.id.TextNewHighScore).setVisibility(View.VISIBLE);
-			 	}
+		fetchPrefs(prefs);
+		updatePrefs(prefs);
+		
 		
 		// Vibrate according to pattern (-1 means don't repeat)
 				v.vibrate(pattern,-1);
 				playSound();
+				
 	}
 	
 	@Override
@@ -84,6 +95,16 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	    mShareButton.setEnabled(false);
 	}
 	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		//shared preferences, to store Best Scores and stuff
+		SharedPreferences prefs = this.getSharedPreferences(
+			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
+		fetchPrefs(prefs);
+		updatePrefs(prefs);
+	}
+
 	public void playSound(){
 		MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.open);
 		mp.start();
@@ -92,8 +113,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	public void mailPaja(View v){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
-		intent.putExtra(Intent.EXTRA_SUBJECT, "Te env’an una paja");
-		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraci—n: "+duration+"s \nScore: "+score+" pts");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Te envï¿½an una paja");
+		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciï¿½n: "+duration+"s \nScore: "+score+" pts");
 		startActivity(Intent.createChooser(intent, "Share Paja"));
 	}
 	
@@ -101,10 +122,11 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 
 	    Intent waIntent = new Intent(Intent.ACTION_SEND);
 	    waIntent.setType("text/plain");
-	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraci—n: "+duration+"s \nScore: "+score+" pts";
+	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciï¿½n: "+duration+"s \nScore: "+score+" pts";
 	    waIntent.setPackage("com.whatsapp");
 	    if (waIntent != null) {
-	        waIntent.putExtra(Intent.EXTRA_TEXT, text);//
+	    	hasShared=true;
+	    	waIntent.putExtra(Intent.EXTRA_TEXT, text);//
 	        startActivity(Intent.createChooser(waIntent, "Share with"));
 	    } else {
 	        Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
@@ -131,7 +153,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		 
 		 final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	      if (errorCode == ConnectionResult.SUCCESS) {
-	          PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);
+	    	  hasShared=true;
+	    	  PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);
 
 	       // Set call-to-action metadata.
 	       /*
@@ -152,7 +175,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	          builder.setText("I'm sending you an appJob!");
 
 	          startActivityForResult(builder.getIntent(), 0);
-	          
+	   
 	      } else {
 	          // Prompt the user to install the Google+ app.
 	    	  GooglePlayServicesUtil.getErrorDialog(errorCode, this, 0).show();
@@ -162,35 +185,35 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	 
 
 	    @Override
-	    public void onConnectionFailed(ConnectionResult result) {
-	        if (result.hasResolution()) {
-	            try {
-	                result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-	            } catch (SendIntentException e) {
-	                mPlusClient.connect();
-	            }
-	        }
-	        // Enregistrer le rŽsultat et rŽsoudre l'Žchec de connexion lorsque l'utilisateur clique.
-	        mConnectionResult = result;
-	    }
+    public void onConnectionFailed(ConnectionResult result) {
+        if (result.hasResolution()) {
+            try {
+                result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+            } catch (SendIntentException e) {
+                mPlusClient.connect();
+            }
+        }
+        // Enregistrer le rï¿½sultat et rï¿½soudre l'ï¿½chec de connexion lorsque l'utilisateur clique.
+        mConnectionResult = result;
+    }
 
-	    @Override
-	    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-	        if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
-	            mConnectionResult = null;
-	            mPlusClient.connect();
-	        }
-	    }
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
+            mConnectionResult = null;
+            mPlusClient.connect();
+        }
+    }
 
-	    //@Override
-	    public void onConnected(Bundle b) {
-	        String accountName = mPlusClient.getAccountName();
-	        Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_LONG).show();
-	        mShareButton.setEnabled(true);
-	    }
+    //@Override
+    public void onConnected(Bundle b) {
+        String accountName = mPlusClient.getAccountName();
+        //Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_LONG).show();
+        mShareButton.setEnabled(true);
+    }
 
-	    @Override
-	    public void onDisconnected() {
+    @Override
+    public void onDisconnected() {
 	    	Log.d(TAG, "disconnected");
 	    	mShareButton.setEnabled(false);
 	    }
@@ -206,9 +229,49 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			toast.show();
 	 }
 	
-	public Long updateTopScore(SharedPreferences prefs, Long newTopScore){
-		prefs.edit().putLong("com.bigotapps.pajapp.topscore", newTopScore).commit();
-		return newTopScore;
+	
+	
+	public void updatePrefs(SharedPreferences prefs){
+			prefs.edit().putLong("com.bigotapps.pajapp.topscore",Math.max(score, topScore)).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.topduration",Math.max(duration, topDuration)).commit();
+			prefs.edit().putLong("com.bigotapps.pajapp.topgolpes",Math.max(golpes, topGolpes)).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.hasshared",hasShared||hasSharedPref).commit();
+			fetchPrefs(prefs); //need to re-fetch in order to update local values tested in updateBadges 
+			updateBadges(prefs);
+		}
+	
+	
+	public void updateBadges(SharedPreferences prefs){
+		//do stuff here
+		if (topScore>badgeScoreTarget){
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeScore_unlocked", true).commit();
+			//should do something funkier than a toast
+			Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT);
+		}
+		if (topDuration>badgeDurationTarget){
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeDuration_unlocked", true).commit();
+			//should do something funkier than a toast
+			Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT);
+		}
+		if (topGolpes>badgeGolpesTarget){
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", true).commit();
+			//should do something funkier than a toast
+			Toast.makeText(this.getApplicationContext(), "new badge: golpes", Toast.LENGTH_SHORT);
+		}
+		if (hasSharedPref){
+			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+			//should do something funkier than a toast
+			Toast.makeText(this.getApplicationContext(), "new badge: share", Toast.LENGTH_SHORT);
+		}
+	}
+	
+
+	
+	public void fetchPrefs(SharedPreferences prefs){
+		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
+		topGolpes=prefs.getLong("com.bigotapps.pajapp.topgolpes", 0);
+		topDuration=prefs.getLong("com.bigotapps.pajapp.topduration", 0);
+		hasSharedPref=prefs.getBoolean("com.bigotapps.pajapp.hasshared", false);
 	}
 	
 }

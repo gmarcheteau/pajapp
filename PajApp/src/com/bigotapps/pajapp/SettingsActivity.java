@@ -1,5 +1,6 @@
 package com.bigotapps.pajapp;
 
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -49,7 +49,6 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         .setVisibleActivities("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
         .build();
         
-    
       //shared preferences, to store Best Scores and stuff
 		SharedPreferences prefs = this.getSharedPreferences(
 			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
@@ -79,7 +78,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
                 mPlusClient.connect();
             }
         }
-        // Enregistrer le résultat et résoudre l'échec de connexion lorsque l'utilisateur clique.
+        // Enregistrer le resultat et resoudre l'echec de connexion lorsque l'utilisateur clique.
         mConnectionResult = result;
     }
 
@@ -171,4 +170,5 @@ public void fbConnect(View view){
     });
 	
 }
+
 }
