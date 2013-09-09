@@ -30,6 +30,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	Long score;
 	Long topScore;
 	String duration;
+	Long golpes;
 
     private static final String TAG = "ExampleActivity";
     private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
@@ -60,9 +61,11 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			//use paja parameters
 			score = Long.valueOf(this.getIntent().getExtras().getString("score"));
 			duration = this.getIntent().getExtras().getString("duration");
+			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
 			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
 			scoreView.setText(score+" pts");
-			quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
+			
+			//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
 		}
 		
 		//retrieve topScore and update if relevant
@@ -75,6 +78,9 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		// Vibrate according to pattern (-1 means don't repeat)
 				v.vibrate(pattern,-1);
 				playSound();
+				
+		//update Badges (Achievement Unlocks)
+		updateBadges(prefs);
 	}
 	
 	@Override
@@ -92,8 +98,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	public void mailPaja(View v){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
-		intent.putExtra(Intent.EXTRA_SUBJECT, "Te env’an una paja");
-		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraci—n: "+duration+"s \nScore: "+score+" pts");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Te envï¿½an una paja");
+		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciï¿½n: "+duration+"s \nScore: "+score+" pts");
 		startActivity(Intent.createChooser(intent, "Share Paja"));
 	}
 	
@@ -101,7 +107,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 
 	    Intent waIntent = new Intent(Intent.ACTION_SEND);
 	    waIntent.setType("text/plain");
-	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraci—n: "+duration+"s \nScore: "+score+" pts";
+	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciï¿½n: "+duration+"s \nScore: "+score+" pts";
 	    waIntent.setPackage("com.whatsapp");
 	    if (waIntent != null) {
 	        waIntent.putExtra(Intent.EXTRA_TEXT, text);//
@@ -170,7 +176,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	                mPlusClient.connect();
 	            }
 	        }
-	        // Enregistrer le rŽsultat et rŽsoudre l'Žchec de connexion lorsque l'utilisateur clique.
+	        // Enregistrer le rï¿½sultat et rï¿½soudre l'ï¿½chec de connexion lorsque l'utilisateur clique.
 	        mConnectionResult = result;
 	    }
 
@@ -209,6 +215,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	public Long updateTopScore(SharedPreferences prefs, Long newTopScore){
 		prefs.edit().putLong("com.bigotapps.pajapp.topscore", newTopScore).commit();
 		return newTopScore;
+	}
+	
+	public void updateBadges(SharedPreferences prefs){
+		//do stuff here
 	}
 	
 }
