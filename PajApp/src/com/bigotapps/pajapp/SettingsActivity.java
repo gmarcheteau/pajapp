@@ -9,12 +9,21 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.plus.PlusClient;
+//import android.app.DownloadManager.Request;
+//import android.service.textservice.SpellCheckerService.Session;
 
 public class SettingsActivity extends Activity implements View.OnClickListener,
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -44,9 +53,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
       //shared preferences, to store Best Scores and stuff
 		SharedPreferences prefs = this.getSharedPreferences(
 			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
-		
-		//retrieve topScore
-		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
+	
+
     
     }
 
@@ -94,7 +102,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         Log.d(TAG, "disconnected");
     }
     public void onClick(View view){
-    	Toast.makeText(this, "Dummy - Not sure this button is necessary in Settings", Toast.LENGTH_LONG).show();
+    	
     
     	/*
     	if (view.getId() == R.id.sign_in_button && !mPlusClient.isConnected()) {
@@ -120,7 +128,47 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     		Toast.makeText(this, accountName + " is already connected.", Toast.LENGTH_LONG).show();
         }
     	
+    	if (view.getId() == R.id.FBSignIn) {
+    		fbConnect(view);
+    		//Toast.makeText(this, "LKNLKLKJLK", Toast.LENGTH_LONG).show();
+    	}
+    	if (view.getId() == R.id.sign_in_button) {
+    		Toast.makeText(this, "Dummy - Not sure this button is necessary in Settings", Toast.LENGTH_LONG).show();
+    	}
     
     }
 
+public void fbConnect(View view){
+	
+	// start Facebook Login
+    Session.openActiveSession(this, true, new Session.StatusCallback() {
+
+      // callback when session changes state
+      @Override
+      public void call(Session session, SessionState state, Exception exception) {
+        if (session.isOpened()) {
+
+          // make request to the /me API
+          Request.newMeRequest(session, new Request.GraphUserCallback() {
+
+            // callback after Graph API response with user object
+            @Override
+            public void onCompleted(GraphUser user, Response response) {
+              if (user != null) {
+               TextView fbname = (TextView) findViewById(R.id.textViewFBName);
+                fbname.setText("Hello " + user.getName() + "!");
+              }
+              else{
+            	  TextView fbname = (TextView) findViewById(R.id.textViewFBName);
+                  fbname.setText("Hello desconocido!");
+              }
+            }
+          }).executeAsync();
+        }
+	        TextView fbname = (TextView) findViewById(R.id.textViewFBName);
+	        fbname.setText("FB session not opened");
+      }
+    });
+	
+}
 }

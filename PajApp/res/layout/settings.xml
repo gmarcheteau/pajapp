@@ -13,5 +13,24 @@
         android:onClick="onClick" >
 
     </com.google.android.gms.common.SignInButton>
+
+    <Button
+        android:id="@+id/FBSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sign_in_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:onClick="onClick"
+        android:text="Facebook SignIn" />
+
+    <TextView
+        android:id="@+id/textViewFBName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/FBSignIn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="88dp"
+        android:text="TextView" />
     
 </RelativeLayout>

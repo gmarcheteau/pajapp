@@ -2,14 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bigotapps.pajapp"
     android:versionCode="0"
-    android:versionName="0.5" >
-
+    android:versionName="0.5">
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
     
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
+      <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -39,7 +40,9 @@
                 <activity
             android:name="com.bigotapps.pajapp.SettingsActivity"
             android:label="@string/app_name" 
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            >
+            
         </activity>
         <activity android:name=".ParseDeepLinkActivity">
 		    <intent-filter>
@@ -49,7 +52,11 @@
 		        <category android:name="android.intent.category.BROWSABLE" />
 		    </intent-filter>
 		</activity>
-        
+		
+		<activity android:name="com.facebook.LoginActivity"
+          android:label="@string/app_name" />
+		
+         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
         
     </application>
 

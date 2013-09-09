@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public float frequency=1;
 	public float frequency_previous=1;
 	public long minDelay = 10;
-	public long timeSinceLastChange=300;
+	public long timeSinceLastChange=0;
 	
 	/**
 	 * PajaMetrics
@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean PAJA_STARTED = false;
 	public long startTime;
 	public long duration=1;
-	public long lastChange;
+	public long lastChange=1;
 	
 	
 	@Override
@@ -210,9 +210,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     
     public float getProgress(){
-    	duration=(System.currentTimeMillis()-startTime)/1000;
-    	avFreq=golpes/duration;
-    	
+    	if(duration==0){
+    	avFreq=1;
+    	}
+    	else{
+    		duration=(System.currentTimeMillis()-startTime)/1000;
+    		avFreq=golpes/(duration+1);
+    	}
     	
     	// frequency coeff
     	if(frequency>0.5*avFreq){freqCoeff=+1;} //if acceleration (at least 20%)
