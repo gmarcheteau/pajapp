@@ -28,6 +28,7 @@ import com.google.android.gms.plus.PlusShare;
 public class PajaCompleted extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
 
 	public long[] pattern = {10,1000,100,1000,100,1000};
+
 	Integer score;
 	long topScore;
 	long topGolpes;
@@ -41,6 +42,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	Integer badgeDurationTarget=60;
 	boolean badgeShareTarget=false;
 	Integer badgeGolpesTarget=200;
+
 
     private static final String TAG = "ExampleActivity";
     private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
@@ -69,8 +71,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		
 		if(this.getIntent().getExtras() != null){
 			//use paja parameters
-			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
+
+		
 			duration = Long.valueOf(this.getIntent().getExtras().getString("duration"));
+			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
 			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
 			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
 			scoreView.setText(score+" pts");
@@ -85,7 +89,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		// Vibrate according to pattern (-1 means don't repeat)
 				v.vibrate(pattern,-1);
 				playSound();
-				
+
+		//update Badges (Achievement Unlocks)
+		updateBadges(prefs);
+
 	}
 	
 	@Override
@@ -185,6 +192,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	 
 
 	    @Override
+
     public void onConnectionFailed(ConnectionResult result) {
         if (result.hasResolution()) {
             try {
@@ -273,6 +281,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		topDuration=prefs.getLong("com.bigotapps.pajapp.topduration", 0);
 		hasSharedPref=prefs.getBoolean("com.bigotapps.pajapp.hasshared", false);
 	}
+	
+	
 	
 }
 

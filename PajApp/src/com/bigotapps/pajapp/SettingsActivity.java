@@ -2,22 +2,19 @@ package com.bigotapps.pajapp;
 
 
 import android.app.Activity;
+import android.app.DownloadManager.Request;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.service.textservice.SpellCheckerService.Session;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
@@ -138,7 +135,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     }
 
 public void fbConnect(View view){
-	
+	/*
 	// start Facebook Login
     Session.openActiveSession(this, true, new Session.StatusCallback() {
 
@@ -168,7 +165,7 @@ public void fbConnect(View view){
 	        fbname.setText("FB session not opened");
       }
     });
-	
+*/	
 }
 
 }
