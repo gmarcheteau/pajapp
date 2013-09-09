@@ -250,6 +250,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				/100);
 	}
     
+    //endPaja: aquí tenemos que pasar más parámetros para temas de achievements etc.
     public void endPaja(){
 		
 		mSensorManager.unregisterListener(this);
@@ -257,6 +258,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     	Intent i = new Intent(getApplicationContext(),PajaCompleted.class);
 		i.putExtra("score", String.valueOf(getScore()));
 		i.putExtra("duration", String.valueOf(duration));
+		i.putExtra("golpes", String;valueOf(golpes));
 		startActivity(i);
     }
     
