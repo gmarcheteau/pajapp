@@ -262,8 +262,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		i.putExtra("score", String.valueOf(getScore()));
 		i.putExtra("duration", String.valueOf(duration));
 
+
 		i.putExtra("golpes", String.valueOf(golpes));
-		quickToast(String.valueOf(duration));
 
 		startActivity(i);
     }
