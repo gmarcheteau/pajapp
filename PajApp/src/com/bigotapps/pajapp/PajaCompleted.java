@@ -123,8 +123,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	public void mailPaja(View v){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
-		intent.putExtra(Intent.EXTRA_SUBJECT, "Te envÔøΩan una paja");
-		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciÔøΩn: "+duration+"s \nScore: "+score+" pts");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Te mandan una paja");
+		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts");
 		startActivity(Intent.createChooser(intent, "Share Paja"));
 	}
 	
@@ -132,7 +132,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 
 	    Intent waIntent = new Intent(Intent.ACTION_SEND);
 	    waIntent.setType("text/plain");
-	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuraciÔøΩn: "+duration+"s \nScore: "+score+" pts";
+	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts";
 	    waIntent.setPackage("com.whatsapp");
 	    if (waIntent != null) {
 	    	hasShared=true;
@@ -203,7 +203,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
                 mPlusClient.connect();
             }
         }
-        // Enregistrer le rÔøΩsultat et rÔøΩsoudre l'ÔøΩchec de connexion lorsque l'utilisateur clique.
+
         mConnectionResult = result;
     }
 
