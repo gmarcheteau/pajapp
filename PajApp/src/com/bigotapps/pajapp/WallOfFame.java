@@ -3,8 +3,11 @@ package com.bigotapps.pajapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,10 +45,10 @@ public class WallOfFame extends Activity {
 		topScoreView.setText(topScore+" pts");
 	*/
 		//adjust visibility of badges
-		ImageView badgeDuration = (ImageView) findViewById(R.id.ImageBadgeDuration);
-		ImageView badgeScore = (ImageView) findViewById(R.id.ImageBadgeScore);
-		ImageView badgeGolpes = (ImageView) findViewById(R.id.ImageBadgeGolpes);
-		ImageView badgeShare = (ImageView) findViewById(R.id.ImageBadgeShare);
+		ImageView badgeDuration = (ImageView) findViewById(R.id.imageBadgeDuration2);
+		ImageView badgeScore = (ImageView) findViewById(R.id.imageBadgeScore2);
+		ImageView badgeGolpes = (ImageView) findViewById(R.id.imageBadgeGolpes2);
+		ImageView badgeShare = (ImageView) findViewById(R.id.imageBadgeShare2);
 		
 		if(!badgeScore_unlocked){
 			badgeScore.setVisibility(View.INVISIBLE);
@@ -61,6 +64,32 @@ public class WallOfFame extends Activity {
 		}
 		
 }
+	
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+		case R.id.change_hand:
+			//changeHands();
+			return true ;
+		case R.id.action_settings:
+			Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+			startActivity(i);
+			return true ;
+		case R.id.view_badges:
+			//Intent j = new Intent(getApplicationContext(),WallOfFame.class);
+			//startActivity(j);
+			return true ;
+		default:
+			return false;
+		}
+	}
+
 	
 	public Long updateTopScore(SharedPreferences prefs, Long newTopScore){
 		prefs.edit().putLong("com.bigotapps.pajapp.topscore", newTopScore).commit();

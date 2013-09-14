@@ -15,83 +15,102 @@
         android:src="@drawable/badge_duration"
         android:visibility="invisible" />
 
-    <ImageView
-        android:id="@+id/ImageBadgeShare"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignLeft="@+id/ImageBadgeScore"
-        android:layout_below="@+id/ImageBadgeScore"
-        android:layout_marginTop="34dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/badge_share"
-        android:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/ImageBadgeGolpes"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignLeft="@+id/ImageBadgeDuration"
-        android:layout_alignTop="@+id/ImageBadgeShare"
-        android:scaleType="centerInside"
-        android:src="@drawable/badge_golpes"
-        android:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/ImageBadgeDuration"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_above="@+id/TextView01"
-        android:layout_marginLeft="32dp"
-        android:layout_toRightOf="@+id/ImageBadgeScore"
-        android:scaleType="centerInside"
-        android:src="@drawable/badge_duration"
-        android:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/ImageBadgeScore"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="46dp"
-        android:layout_marginTop="90dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/badge_fire"
-        android:visibility="visible" />
-
-    <TextView
-        android:id="@+id/TextView01"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView1"
-        android:layout_alignBottom="@+id/textView1"
-        android:layout_alignRight="@+id/ImageBadgeDuration"
-        android:layout_marginRight="18dp"
-        android:text="Duration >60s" />
+        android:layout_height="fill_parent"
+        android:fillViewport="true" >
 
-    <TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/ImageBadgeShare"
-        android:text="Share a Paja" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ImageBadgeScore"
-        android:layout_below="@+id/ImageBadgeScore"
-        android:text="Score >100k" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/TextView03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/TextView02"
-        android:layout_alignBottom="@+id/TextView02"
-        android:layout_alignRight="@+id/TextView01"
-        android:text="Golpes >200" />
+                <ImageView
+                    android:id="@+id/imageBadgeGolpes2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/badge_golpes" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/badge_golpes"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/imageBadgeScore2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/badge_fire" />
+
+                <TextView
+                    android:id="@+id/TextViewGPlusName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/badge_score"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/imageBadgeDuration2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/badge_duration" />
+
+                <TextView
+                    android:id="@+id/TextView02"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/badge_duration"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/imageBadgeShare2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/badge_share" />
+
+                <TextView
+                    android:id="@+id/TextView03"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/badge_share"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </RelativeLayout>

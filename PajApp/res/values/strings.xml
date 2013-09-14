@@ -6,5 +6,13 @@
     <string name="change_hand">Change hand</string>
     <string name="view_badges">View badges</string>
     <string name="app_id">298577350281191</string>
+    <string name="badge_golpes">Badges Golpes</string>
+    <string name="badge_duration">Badge Duration</string>
+    <string name="badge_score">Badge Score</string>
+    <string name="badge_share">Badge Share</string>
+    <string name="pajaShareType1">Casual Paja</string>
+    <string name="pajaShareType2">Birthday Paja</string>
+    <string name="pajaShareType3">Missing You Paja</string>
+    <string name="pajaShareType4">Other:</string>
 
 </resources>

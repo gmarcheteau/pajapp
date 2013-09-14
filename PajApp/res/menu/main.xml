@@ -15,5 +15,19 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/view_badges"/>
+  <item
+        android:id="@+id/debugOptions"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="debug options">  
+  
+        <menu >
+        <item
+            android:id="@+id/forcePajaComplete"
+            android:orderInCategory="100"
+            android:showAsAction="never"
+            android:title="force end Paja" />
+        </menu>
+        </item>
 
 </menu>

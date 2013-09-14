@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public long lastChange=1;
 	
 	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,6 +71,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 		
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		
 	
 		if(this.getIntent().getExtras() != null){
 			//when user is coming from deep-linking
@@ -76,7 +79,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 			quickToast(message);
 		}
 		//initialize pref file if new
-		initNewUser();
+		initUser();
 		
 	}
 
@@ -97,6 +100,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 			return true ;
 		case R.id.view_badges:
 			goBadges();
+			return true ;
+		case R.id.forcePajaComplete:
+			endPaja();
 			return true ;
 		default:
 			return false;
@@ -299,10 +305,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 
 
-	public void initNewUser(){
+	public void initUser(){
 		SharedPreferences prefs = this.getSharedPreferences(
 			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
 		boolean IS_NEW=prefs.getBoolean("com.bigotapps.pajapp.isnew", true);
+		
 		if(IS_NEW){
 			//initialize achievements etc.
 			prefs.edit().putBoolean("com.bigotapps.pajapp.isnew", false).commit();
@@ -317,9 +324,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 			prefs.edit().putLong("com.bigotapps.pajapp.topgolpes", 0).commit();
 			prefs.edit().putLong("com.bigotapps.pajapp.topscore", 0).commit();
 			prefs.edit().putLong("com.bigotapps.pajapp.topduration", 0).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", false).commit();
+			prefs.edit().putBoolean("com.bigotapps.pajapp.FBConnect", false).commit();
 		}
 				
 	}
 	
-
+   
+	
 }

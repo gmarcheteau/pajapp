@@ -13,55 +13,25 @@
         android:background="@color/bigRed" >
 
         <ImageButton
-            android:id="@+id/ImageButtonWoF"
+            android:id="@+id/WOFButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/imageButtonNew"
+            android:layout_alignTop="@+id/NewPajaButton"
             android:layout_marginRight="74dp"
-            android:onClick="WoF"
+            android:onClick="onClick"
             android:src="@android:drawable/btn_star" />
 
         <ImageButton
-            android:id="@+id/imageButtonNew"
+            android:id="@+id/NewPajaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="56dp"
-            android:layout_toLeftOf="@+id/ImageButtonWoF"
-            android:onClick="newPaja"
+            android:layout_toLeftOf="@+id/WOFButton"
+            android:onClick="onClick"
             android:src="@android:drawable/ic_menu_revert" />
-
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/ImageBadgeScore"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="30dp"
-        android:src="@drawable/fist2" />
-
-    <ImageButton
-        android:id="@+id/ImageButtonWhatsapp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/gPlusShareButton"
-        android:layout_centerHorizontal="true"
-        android:background="@color/bigWhite"
-        android:onClick="onClickWhatsApp"
-        android:src="@drawable/whatsapp_logo_small" />
-
-    <ImageButton
-        android:id="@+id/imageButtonShare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ImageButtonWhatsapp"
-        android:layout_toLeftOf="@+id/textViewScore"
-        android:background="@color/bigRed"
-        android:onClick="mailPaja"
-        android:src="@android:drawable/sym_action_email" />
 
     <TextView
         android:id="@+id/textViewScore"
@@ -74,28 +44,6 @@
         android:textColor="@color/bigRed"
         android:textSize="50sp" />
 
-    <ImageButton
-        android:id="@+id/gPlusShareButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/ImageBadgeScore"
-        android:layout_toRightOf="@+id/textViewScore"
-        android:background="@color/bigWhite"
-        android:onClick="gplusShare"
-        android:src="@drawable/gplusicon_small" />
-
-    <TextView
-        android:id="@+id/TextShareWith"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ImageBadgeScore"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="14dp"
-        android:text="Share with:"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigRed"
-        android:textSize="30sp" />
-
     <TextView
         android:id="@+id/TextNewHighScore"
         android:layout_width="wrap_content"
@@ -107,5 +55,76 @@
         android:textColor="@color/bigRed"
         android:textSize="30sp"
         android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/TextShareWith"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/WhatsappButton"
+        android:layout_alignLeft="@+id/gPlusShareButton"
+        android:layout_marginBottom="26dp"
+        android:text="Share with:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigRed"
+        android:textSize="30sp" />
+
+    <RadioGroup
+        android:id="@+id/pajaShareTypeRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/TextShareWith"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="34dp" >
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/pajaShareType1" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pajaShareType2" />
+
+        <RadioButton
+            android:id="@+id/radio2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pajaShareType3" />
+    </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/mailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/WhatsappButton"
+        android:layout_alignRight="@+id/TextNewHighScore"
+        android:background="@color/bigRed"
+        android:onClick="onClick"
+        android:src="@android:drawable/sym_action_email" />
+
+    <ImageButton
+        android:id="@+id/WhatsappButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relLayoutSharing"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="18dp"
+        android:background="@color/bigWhite"
+        android:onClick="onClick"
+        android:src="@drawable/whatsapp_logo_small" />
+
+    <ImageButton
+        android:id="@+id/gPlusShareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/WhatsappButton"
+        android:layout_toLeftOf="@+id/textViewScore"
+        android:background="@color/bigWhite"
+        android:onClick="onClick"
+        android:src="@drawable/gplusicon_small" />
 
 </RelativeLayout>
