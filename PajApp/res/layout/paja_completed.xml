@@ -31,6 +31,18 @@
             android:layout_toLeftOf="@+id/WOFButton"
             android:onClick="onClick"
             android:src="@android:drawable/ic_menu_revert" />
+
+        <ImageButton
+            android:id="@+id/mailButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="26dp"
+            android:background="@color/bigRed"
+            android:onClick="onClick"
+            android:src="@android:drawable/sym_action_email" />
+
     </RelativeLayout>
 
     <TextView
@@ -97,16 +109,6 @@
     </RadioGroup>
 
     <ImageButton
-        android:id="@+id/mailButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/WhatsappButton"
-        android:layout_alignRight="@+id/TextNewHighScore"
-        android:background="@color/bigRed"
-        android:onClick="onClick"
-        android:src="@android:drawable/sym_action_email" />
-
-    <ImageButton
         android:id="@+id/WhatsappButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -126,5 +128,15 @@
         android:background="@color/bigWhite"
         android:onClick="onClick"
         android:src="@drawable/gplusicon_small" />
+
+    <ImageButton
+        android:id="@+id/FBShareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextShareWith"
+        android:layout_toRightOf="@+id/textViewScore"
+        android:background="@color/bigWhite"
+        android:onClick="onClick"
+        android:src="@drawable/fbicon_small" />
 
 </RelativeLayout>

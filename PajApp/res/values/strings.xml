@@ -14,5 +14,7 @@
     <string name="pajaShareType2">Birthday Paja</string>
     <string name="pajaShareType3">Missing You Paja</string>
     <string name="pajaShareType4">Other:</string>
+    
+    <string name="notConnected">You are not connected. Please check connection and try again.</string>
 
 </resources>

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +19,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
@@ -37,7 +44,10 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
 	Long topScore;
 	
 	 //shared preferences, to store Best Scores and stuff
-	SharedPreferences prefs;   
+	SharedPreferences prefs;
+	boolean FB_CONNECT = false;
+	boolean GP_CONNECT = false;
+	private GraphUser fbuser;
 	   
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +65,20 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         mConnectionProgressDialog.setMessage("Signing in, biatch...");
       
         prefs = getSharedPreferences("com.bigotapps.pajapp", Context.MODE_PRIVATE);
-        boolean FB_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.FB_Connect", false);
-		boolean GP_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.gPlusConnect", false);
+        FB_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.FBConnect", false);
+		GP_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.gPlusConnect", false);
     
         Switch switchGPlus = (Switch) findViewById(R.id.switchGPlus);
         switchGPlus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                	//actions done only if new
+                	if(!GP_CONNECT){
                 	gPlusConnect();
         			//save preferences
-        	        prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", true).commit();
-        	        //Toast.makeText(getApplicationContext(), "check working", Toast.LENGTH_SHORT).show();
-        	        
+        	        prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", true).commit();      	        
         	        //should go back to unChecked if user Cancels login
-        	        
+                	}
                 } else {
                     // The toggle is disabled
                 	Toast.makeText(getApplicationContext(), "G+ unchecked", Toast.LENGTH_SHORT).show();
@@ -85,18 +95,29 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         switchFB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    // The toggle is enabled
+                	//actions done only if new
+                	if(!FB_CONNECT){
+                	fbConnect();
+                	//save preferences
+        	        prefs.edit().putBoolean("com.bigotapps.pajapp.FBConnect", true).commit();
+        	        
+                	}
                 } else {
                     // The toggle is disabled
+                	Toast.makeText(getApplicationContext(), "FB unchecked", Toast.LENGTH_SHORT).show();
+                	//save preferences
+        	        prefs.edit().putBoolean("com.bigotapps.pajapp.FBConnect", false).commit();
                 }
             }
         });
         
         if (GP_CONNECT){
-        	gPlusConnect();
         	switchGPlus.setChecked(true);
         }
-        if (FB_CONNECT) fbConnect();
+        if (FB_CONNECT){
+            switchFB.setChecked(true);
+            }
+        
     
     }
 
@@ -206,7 +227,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     }
 
 public void fbConnect(){
-	/*
+	
 	// start Facebook Login
     Session.openActiveSession(this, true, new Session.StatusCallback() {
 
@@ -222,10 +243,12 @@ public void fbConnect(){
             @Override
             public void onCompleted(GraphUser user, Response response) {
               if (user != null) {
+              Toast.makeText(getApplicationContext(), "FB name exists", Toast.LENGTH_SHORT).show();
                TextView fbname = (TextView) findViewById(R.id.textViewFBName);
-                fbname.setText("Hello " + user.getName() + "!");
+               fbname.setText("Hello " + user.getName() + "!");
               }
               else{
+            	  Toast.makeText(getApplicationContext(), "FB name does not exist", Toast.LENGTH_SHORT).show();
             	  TextView fbname = (TextView) findViewById(R.id.textViewFBName);
                   fbname.setText("Hello desconocido!");
               }
@@ -236,15 +259,18 @@ public void fbConnect(){
 	        fbname.setText("FB session not opened");
       }
     });
-*/	
+	
 }
 
 public void gPlusConnect(){
-	
+	if(!isNetworkConnected()){
+		Toast.makeText(getApplicationContext(), R.string.notConnected, Toast.LENGTH_SHORT).show();
+	}
+	else{	
 	mPlusClient.connect();
 	if(!mPlusClient.isConnected()){
 		if (mConnectionResult == null) {
-           mConnectionProgressDialog.show();
+           //mConnectionProgressDialog.show();
         } else {
             try {
                 mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
@@ -258,9 +284,7 @@ public void gPlusConnect(){
 	}
 	else Toast.makeText(this.getApplicationContext(), "G+ already connected", Toast.LENGTH_SHORT).show();
 	
-//	if(!mPlusClient.isConnected()){
-//	mPlusClient.connect();
-//	}
+	}
 }
 
 public void gPlusDisconnect(){
@@ -275,5 +299,15 @@ public void gPlusDisconnect(){
          });
     }
 }
+
+private boolean isNetworkConnected() {
+	  ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	  NetworkInfo ni = cm.getActiveNetworkInfo();
+	  if (ni == null) {
+	   // There are no active networks.
+	   return false;
+	  } else
+	   return true;
+	}
 
 }

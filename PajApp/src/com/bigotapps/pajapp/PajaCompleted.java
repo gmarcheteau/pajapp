@@ -8,8 +8,9 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -161,6 +162,8 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	}
 	
 	public void mailPaja(){
+		hasShared=true;
+		prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
 		intent.putExtra(Intent.EXTRA_SUBJECT, "Te mandan una paja");
@@ -176,6 +179,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	    waIntent.setPackage("com.whatsapp");
 	    if (waIntent != null) {
 	    	hasShared=true;
+	    	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
 	    	waIntent.putExtra(Intent.EXTRA_TEXT, text);//
 	        startActivity(Intent.createChooser(waIntent, "Share with"));
 	    } else {
@@ -216,6 +220,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			case R.id.WOFButton:
 				WoF();
 				break;
+			case R.id.FBShareButton:
+				quickToast("coming soon");
+				break;
+				
 			
 	 }
 }
@@ -236,6 +244,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			 //if G+ installed
 			 if (errorCode == ConnectionResult.SUCCESS) {
 	    	  hasShared=true;
+	    	  prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
 	    	  PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);
 
 	       // Set call-to-action metadata.
@@ -372,11 +381,15 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	
 
 	public void gPlusConnect(){
+		if(!isNetworkConnected()){
+			Toast.makeText(getApplicationContext(), R.string.notConnected, Toast.LENGTH_LONG).show();
+		}
+		else{	
 		mPlusClient.connect();
 		
 		if(!mPlusClient.isConnected()){
 			if (mConnectionResult == null) {
-	           mConnectionProgressDialog.show();
+	           //mConnectionProgressDialog.show();
 	        } else {
 	            try {
 	                mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
@@ -389,9 +402,20 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 
 		}
 		else Toast.makeText(this.getApplicationContext(), "G+ already connected", Toast.LENGTH_SHORT).show();
-		
+		}
 	}
 	
 	
+	private boolean isNetworkConnected() {
+		  ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		  NetworkInfo ni = cm.getActiveNetworkInfo();
+		  if (ni == null) {
+		   // There are no active networks.
+		   return false;
+		  } else
+		   return true;
+	 }
+	
+
 }
 
