@@ -44,7 +44,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	long golpes;
 	
 	Integer badgeScoreTarget=100000;
-	Integer badgeDurationTarget=60;
+	Integer badgeDurationTarget=20;
 	boolean badgeShareTarget=false;
 	Integer badgeGolpesTarget=200;
 	public boolean wantedToShare=false;

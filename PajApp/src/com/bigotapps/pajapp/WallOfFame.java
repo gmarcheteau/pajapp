@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class WallOfFame extends Activity {
+public class WallOfFame extends Activity{
 	
 	Long currentScore;
 	Long topScore;
@@ -114,6 +115,25 @@ public void fetchUserData(SharedPreferences prefs){
 	badgeGolpes_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", false);
 	badgeShare_unlocked=prefs.getBoolean("com.bigotapps.pajapp.badgeShare_unlocked", false);
 }
+
+
+public void onClick (View view){
+		ImageView animationTarget = (ImageView) view;
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+		Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+	    animationTarget.startAnimation(animation);
+	}
+
+public void onClick2 (View view){
+	ImageView animationTarget = (ImageView) view;
+    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+	Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+    animationTarget.startAnimation(animation);
+}
+
+
 }
 
 	
