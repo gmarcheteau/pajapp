@@ -1,23 +1,15 @@
 package com.bigotapps.pajapp;
 
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,7 +47,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
 	SharedPreferences prefs;
 	boolean FB_CONNECT = false;
 	boolean GP_CONNECT = false;
-	public String fbusername="nada for now";
+	public String fbusername="fbUserName";
 	   
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +84,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
                 	Toast.makeText(getApplicationContext(), "G+ unchecked", Toast.LENGTH_SHORT).show();
                 	gPlusDisconnect();
                 	prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", false).commit();
-                	TextView gpn = (TextView) findViewById(R.id.TextViewGPlusName);
+                	TextView gpn = (TextView) findViewById(R.id.textViewFBname);
                     gpn.setText("G+: disconnected");
                 	
                 }
@@ -108,8 +100,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
                 	fbConnect();
                 	//save preferences
         	        prefs.edit().putBoolean("com.bigotapps.pajapp.FBConnect", true).commit();
-        	        
-                	}
+        	        }
                 } else {
                     // The toggle is disabled
                 	Toast.makeText(getApplicationContext(), "FB unchecked", Toast.LENGTH_SHORT).show();
@@ -184,7 +175,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     //@Override
     public void onConnected(Bundle b) {
         String accountName = mPlusClient.getAccountName();
-        TextView gpn = (TextView) findViewById(R.id.TextViewGPlusName);
+        TextView gpn = (TextView) findViewById(R.id.textViewFBname);
         gpn.setText("G+: "+accountName);
         mConnectionProgressDialog.dismiss();
         //Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_SHORT).show();
@@ -241,38 +232,32 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     }
 
 public void fbConnect(){
-	
+	 Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
 	// start Facebook Login
     Session.openActiveSession(this, true, new Session.StatusCallback() {
 
       // callback when session changes state
       @Override
       public void call(Session session, SessionState state, Exception exception) {
-        if (session.isOpened()) {
-
-          // make request to the /me API
+    	  if (session.isOpened()) {
+        
+        // make request to the /me API
           Request.newMeRequest(session, new Request.GraphUserCallback() {
 
-            // callback after Graph API response with user object
-            @Override
-            public void onCompleted(GraphUser user, Response response) {
-            	Toast.makeText(getApplicationContext(), "COMPLETED", Toast.LENGTH_SHORT).show();
-            if (user != null) {
-              Toast.makeText(getApplicationContext(), "FB name exists", Toast.LENGTH_SHORT).show();
-              TextView fbname = (TextView) findViewById(R.id.textViewFBName); 
-              fbname.setText("Hello " + user.getName() + "!");
-              fbusername=user.getName();
-              }
-              else{
-            	  Toast.makeText(getApplicationContext(), "FB name does not exist", Toast.LENGTH_SHORT).show();
-            	  TextView fbname = (TextView) findViewById(R.id.textViewFBName);
-            	  fbname.setText("Hello desconocido!");
-              }
-            }
-          }).executeAsync();
+	  // callback after Graph API response with user object
+	  @Override
+	  public void onCompleted(GraphUser user, Response response) {
+	    if (user != null) {
+	    	Toast.makeText(getApplicationContext(), "user not null", Toast.LENGTH_SHORT).show();
+	    	TextView fbname = (TextView) findViewById(R.id.textViewFBname);
+		    fbname.setText("Hello " + user.getName() + "!");
+		    fbusername=user.getName();
+	    }
+	  }
+	}).executeAsync();
           
         }
-        TextView fbname = (TextView) findViewById(R.id.textViewFBName);
+        TextView fbname = (TextView) findViewById(R.id.textViewFBname);
 	        fbname.setText("FB session not opened");
       }
     });

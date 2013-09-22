@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">PajApp beta</string>
     <string name="action_settings">Settings</string>
@@ -14,7 +13,53 @@
     <string name="pajaShareType2">Birthday Paja</string>
     <string name="pajaShareType3">Missing You Paja</string>
     <string name="pajaShareType4">Other:</string>
-    
     <string name="notConnected">You are not connected. Please check connection and try again.</string>
+    <string name="title_badge_list">Badges</string>
+    <string name="title_badge_detail">Badge Detail</string>
+    <string name="title_activity_badge_slide">BadgeSlideActivity</string>
+    <string name="hello_world">Hello world!</string>
+    
+    <!-- Titles -->
+    <string name="title_crossfade">Simple Crossfade</string>
+    <string name="title_card_flip">Card Flip</string>
+    <string name="title_screen_slide">Screen Slide</string>
+    <string name="title_zoom">Zoom</string>
+    <string name="title_layout_changes">Layout Changes</string>
+    <string name="title_template_step">Step <xliff:g id="step_number">%1$d</xliff:g>: Lorem
+        Ipsum</string>
 
+    <!-- Actions -->
+    <string name="action_toggle">Toggle indicator</string>
+    <string name="action_add_item">Add item</string>
+    <string name="action_remove_item">Remove item</string>
+    <string name="action_previous">Previous</string>
+    <string name="action_next">Next</string>
+    <string name="action_finish">Finish</string>
+    <string name="action_info">Photo info</string>
+    <string name="action_photo">View photo</string>
+
+    <!-- Messages -->
+    <string name="message_empty_layout_changes">Add an item above to get started.</string>
+    <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
+
+    <!-- Accessibility-only descriptions -->
+    <string name="description_image_1">Image 1</string>
+    <string name="description_image_2">Image 2</string>
+    <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
+
+    <!-- Other strings -->
+    <string name="card_back_title">Angry Red Android</string>
+    <string name="card_back_description"><![CDATA[Lorem ipsum dolor sit]]></string>
+    <string name="lorem_ipsum"><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et magna ut erat elementum cursus in quis ipsum. Nam faucibus ultrices eros, vel tempor leo semper sit amet. Duis magna quam, congue vitae interdum nec, condimentum ut lectus. Sed commodo venenatis eros a dignissim. Nunc adipiscing turpis nec magna venenatis at ultricies ipsum bibendum. Sed volutpat urna quis nisi vulputate egestas. Etiam eu dui a enim lacinia dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.\n\nPhasellus orci mi, eleifend nec congue id, volutpat at neque. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer semper velit vel leo rutrum sed fermentum elit porta.]]></string>
+	
+	<!-- Badges Names and Descriptions -->
+    <string name="badge1_name">Badge Duration</string>
+    <string name="badge1_desc">Desciption badge duration</string>
+    <string name="badge2_name">Badge Golpes</string>
+    <string name="badge2_desc">Desciption badge golpes</string>
+    <string name="badge3_name">Badge Share</string>
+    <string name="badge3_desc">Desciption badge share</string>
+    <string name="badge4_name">Badge Score</string>
+    <string name="badge4_desc">Desciption badge score</string>
+    
 </resources>

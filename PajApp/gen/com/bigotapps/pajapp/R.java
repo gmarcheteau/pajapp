@@ -500,7 +500,7 @@ containing a value of this type.
         public static final int com_facebook_list_section_header_background=0x7f020011;
         public static final int com_facebook_loginbutton_silver=0x7f020012;
         public static final int com_facebook_logo=0x7f020013;
-        public static final int com_facebook_picker_default_separator_color=0x7f020049;
+        public static final int com_facebook_picker_default_separator_color=0x7f02004d;
         public static final int com_facebook_picker_item_background=0x7f020014;
         public static final int com_facebook_picker_list_focused=0x7f020015;
         public static final int com_facebook_picker_list_longpressed=0x7f020016;
@@ -547,109 +547,127 @@ containing a value of this type.
         public static final int fist2=0x7f02003f;
         public static final int gplusicon_big=0x7f020040;
         public static final int gplusicon_small=0x7f020041;
-        public static final int ic_launcher=0x7f020042;
-        public static final int openhandleft=0x7f020043;
-        public static final int openhandright=0x7f020044;
-        public static final int pajawon=0x7f020045;
-        public static final int stars=0x7f020046;
-        public static final int whatsapp_logo=0x7f020047;
-        public static final int whatsapp_logo_small=0x7f020048;
+        public static final int ic_action_info=0x7f020042;
+        public static final int ic_action_new=0x7f020043;
+        public static final int ic_action_photo=0x7f020044;
+        public static final int ic_launcher=0x7f020045;
+        public static final int ic_list_remove=0x7f020046;
+        public static final int openhandleft=0x7f020047;
+        public static final int openhandright=0x7f020048;
+        public static final int pajawon=0x7f020049;
+        public static final int stars=0x7f02004a;
+        public static final int whatsapp_logo=0x7f02004b;
+        public static final int whatsapp_logo_small=0x7f02004c;
     }
     public static final class id {
-        public static final int FBShareButton=0x7f07002f;
-        public static final int FBSignIn=0x7f070032;
-        public static final int GooglePlusSigninButton=0x7f070033;
-        public static final int ImageBadgeDuration=0x7f070040;
-        public static final int ImageBadgeGolpes=0x7f07003f;
+        public static final int FBShareButton=0x7f070036;
+        public static final int FBSignIn=0x7f070039;
+        public static final int GooglePlusSigninButton=0x7f07003a;
+        public static final int ImageBadgeDuration=0x7f070041;
+        public static final int ImageBadgeGolpes=0x7f070040;
         public static final int ImageBadgeScore=0x7f070008;
         public static final int ImageBadgeShare=0x7f07003e;
-        public static final int NewPajaButton=0x7f070024;
-        public static final int SwitchFB=0x7f070035;
-        public static final int TextNewHighScore=0x7f070027;
-        public static final int TextShareWith=0x7f070028;
-        public static final int TextView02=0x7f07003b;
-        public static final int TextView03=0x7f07003d;
+        public static final int NewPajaButton=0x7f07002b;
+        public static final int ScrollView1=0x7f07003d;
+        public static final int SwitchFB=0x7f07003c;
+        public static final int TextNewHighScore=0x7f07002e;
+        public static final int TextShareWith=0x7f07002f;
+        public static final int TextView02=0x7f07003f;
+        public static final int TextView03=0x7f070042;
         public static final int TextViewFast=0x7f07000b;
-        public static final int TextViewGPlusName=0x7f070030;
         public static final int TextViewSlow=0x7f07000a;
-        public static final int WOFButton=0x7f070023;
-        public static final int WhatsappButton=0x7f070029;
-        public static final int action_settings=0x7f070041;
-        public static final int change_hand=0x7f070042;
-        public static final int com_facebook_login_activity_progress_bar=0x7f07000e;
-        public static final int com_facebook_picker_activity_circle=0x7f07000d;
-        public static final int com_facebook_picker_checkbox=0x7f070010;
-        public static final int com_facebook_picker_checkbox_stub=0x7f070014;
-        public static final int com_facebook_picker_divider=0x7f070018;
-        public static final int com_facebook_picker_done_button=0x7f070017;
-        public static final int com_facebook_picker_image=0x7f070011;
-        public static final int com_facebook_picker_list_section_header=0x7f070015;
-        public static final int com_facebook_picker_list_view=0x7f07000c;
-        public static final int com_facebook_picker_profile_pic_stub=0x7f070012;
-        public static final int com_facebook_picker_row_activity_circle=0x7f07000f;
-        public static final int com_facebook_picker_search_text=0x7f07001d;
-        public static final int com_facebook_picker_title=0x7f070013;
-        public static final int com_facebook_picker_title_bar=0x7f07001a;
-        public static final int com_facebook_picker_title_bar_stub=0x7f070019;
-        public static final int com_facebook_picker_top_bar=0x7f070016;
-        public static final int com_facebook_search_bar_view=0x7f07001c;
-        public static final int com_facebook_usersettingsfragment_login_button=0x7f070020;
-        public static final int com_facebook_usersettingsfragment_logo_image=0x7f07001e;
-        public static final int com_facebook_usersettingsfragment_profile_name=0x7f07001f;
-        public static final int debugOptions=0x7f070044;
-        public static final int forcePajaComplete=0x7f070045;
-        public static final int gPlusShareButton=0x7f07002a;
-        public static final int horizontalScrollView1=0x7f070036;
+        public static final int WOFButton=0x7f07002a;
+        public static final int WhatsappButton=0x7f070030;
+        public static final int action_add_item=0x7f070044;
+        public static final int action_next=0x7f070046;
+        public static final int action_previous=0x7f070045;
+        public static final int action_settings=0x7f070047;
+        public static final int action_toggle=0x7f070043;
+        public static final int badgeDesc=0x7f07000f;
+        public static final int badgeGalleryDebug=0x7f07004d;
+        public static final int badgeName=0x7f07000e;
+        public static final int badgeView=0x7f07000d;
+        public static final int change_hand=0x7f070048;
+        public static final int com_facebook_login_activity_progress_bar=0x7f070014;
+        public static final int com_facebook_picker_activity_circle=0x7f070013;
+        public static final int com_facebook_picker_checkbox=0x7f070016;
+        public static final int com_facebook_picker_checkbox_stub=0x7f07001a;
+        public static final int com_facebook_picker_divider=0x7f07001e;
+        public static final int com_facebook_picker_done_button=0x7f07001d;
+        public static final int com_facebook_picker_image=0x7f070017;
+        public static final int com_facebook_picker_list_section_header=0x7f07001b;
+        public static final int com_facebook_picker_list_view=0x7f070012;
+        public static final int com_facebook_picker_profile_pic_stub=0x7f070018;
+        public static final int com_facebook_picker_row_activity_circle=0x7f070015;
+        public static final int com_facebook_picker_search_text=0x7f070023;
+        public static final int com_facebook_picker_title=0x7f070019;
+        public static final int com_facebook_picker_title_bar=0x7f070020;
+        public static final int com_facebook_picker_title_bar_stub=0x7f07001f;
+        public static final int com_facebook_picker_top_bar=0x7f07001c;
+        public static final int com_facebook_search_bar_view=0x7f070022;
+        public static final int com_facebook_usersettingsfragment_login_button=0x7f070026;
+        public static final int com_facebook_usersettingsfragment_logo_image=0x7f070024;
+        public static final int com_facebook_usersettingsfragment_profile_name=0x7f070025;
+        public static final int debugOptions=0x7f07004a;
+        public static final int forcePajaComplete=0x7f07004b;
+        public static final int gPlusShareButton=0x7f070031;
+        public static final int getAllBadges=0x7f07004c;
         public static final int hybrid=0x7f070004;
-        public static final int imageBadgeDuration2=0x7f07003a;
-        public static final int imageBadgeGolpes2=0x7f070037;
-        public static final int imageBadgeScore2=0x7f070039;
-        public static final int imageBadgeShare2=0x7f07003c;
         public static final int large=0x7f070006;
-        public static final int mailButton=0x7f070025;
+        public static final int mailButton=0x7f07002c;
         public static final int none=0x7f070000;
         public static final int normal=0x7f070001;
-        public static final int pajaShareTypeRadio=0x7f07002b;
-        public static final int picker_subtitle=0x7f07001b;
-        public static final int radio0=0x7f07002c;
-        public static final int radio1=0x7f07002d;
-        public static final int radio2=0x7f07002e;
+        public static final int pager=0x7f07000c;
+        public static final int pager_tab_strip=0x7f070011;
+        public static final int pajaShareTypeRadio=0x7f070032;
+        public static final int picker_subtitle=0x7f070021;
+        public static final int radio0=0x7f070033;
+        public static final int radio1=0x7f070034;
+        public static final int radio2=0x7f070035;
         public static final int relLayout=0x7f070007;
-        public static final int relLayoutComp=0x7f070021;
-        public static final int relLayoutSharing=0x7f070022;
+        public static final int relLayoutComp=0x7f070028;
+        public static final int relLayoutSharing=0x7f070029;
         public static final int satellite=0x7f070002;
         public static final int small=0x7f070005;
-        public static final int switchGPlus=0x7f070034;
+        public static final int switchGPlus=0x7f07003b;
         public static final int terrain=0x7f070003;
-        public static final int textView1=0x7f070038;
-        public static final int textViewFBName=0x7f070031;
+        public static final int textUnlockBadge=0x7f070010;
+        public static final int textViewFBname=0x7f070037;
+        public static final int textViewGPlusname=0x7f070038;
         public static final int textViewProgress=0x7f070009;
-        public static final int textViewScore=0x7f070026;
-        public static final int view_badges=0x7f070043;
+        public static final int textViewScore=0x7f07002d;
+        public static final int tv=0x7f070027;
+        public static final int view_badges=0x7f070049;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int com_facebook_friendpickerfragment=0x7f030001;
-        public static final int com_facebook_login_activity_layout=0x7f030002;
-        public static final int com_facebook_picker_activity_circle_row=0x7f030003;
-        public static final int com_facebook_picker_checkbox=0x7f030004;
-        public static final int com_facebook_picker_image=0x7f030005;
-        public static final int com_facebook_picker_list_row=0x7f030006;
-        public static final int com_facebook_picker_list_section_header=0x7f030007;
-        public static final int com_facebook_picker_search_box=0x7f030008;
-        public static final int com_facebook_picker_title_bar=0x7f030009;
-        public static final int com_facebook_picker_title_bar_stub=0x7f03000a;
-        public static final int com_facebook_placepickerfragment=0x7f03000b;
-        public static final int com_facebook_placepickerfragment_list_row=0x7f03000c;
-        public static final int com_facebook_search_bar_layout=0x7f03000d;
-        public static final int com_facebook_usersettingsfragment=0x7f03000e;
-        public static final int paja_completed=0x7f03000f;
-        public static final int settings=0x7f030010;
-        public static final int wall_of_fame=0x7f030011;
-        public static final int wall_of_fame_2=0x7f030012;
+        public static final int activity_screen_slide=0x7f030001;
+        public static final int badge_detail=0x7f030002;
+        public static final int badge_gallery=0x7f030003;
+        public static final int com_facebook_friendpickerfragment=0x7f030004;
+        public static final int com_facebook_login_activity_layout=0x7f030005;
+        public static final int com_facebook_picker_activity_circle_row=0x7f030006;
+        public static final int com_facebook_picker_checkbox=0x7f030007;
+        public static final int com_facebook_picker_image=0x7f030008;
+        public static final int com_facebook_picker_list_row=0x7f030009;
+        public static final int com_facebook_picker_list_section_header=0x7f03000a;
+        public static final int com_facebook_picker_search_box=0x7f03000b;
+        public static final int com_facebook_picker_title_bar=0x7f03000c;
+        public static final int com_facebook_picker_title_bar_stub=0x7f03000d;
+        public static final int com_facebook_placepickerfragment=0x7f03000e;
+        public static final int com_facebook_placepickerfragment_list_row=0x7f03000f;
+        public static final int com_facebook_search_bar_layout=0x7f030010;
+        public static final int com_facebook_usersettingsfragment=0x7f030011;
+        public static final int myfragment_layout=0x7f030012;
+        public static final int paja_completed=0x7f030013;
+        public static final int settings=0x7f030014;
+        public static final int wall_of_fame_2=0x7f030015;
     }
     public static final class menu {
-        public static final int main=0x7f0b0000;
+        public static final int activity_crossfade=0x7f0b0000;
+        public static final int activity_layout_changes=0x7f0b0001;
+        public static final int activity_screen_slide=0x7f0b0002;
+        public static final int main=0x7f0b0003;
     }
     public static final class raw {
         public static final int close=0x7f050000;
@@ -658,7 +676,17 @@ containing a value of this type.
         public static final int staple=0x7f050003;
     }
     public static final class string {
+        public static final int action_add_item=0x7f080047;
+        public static final int action_finish=0x7f08004b;
+        public static final int action_info=0x7f08004c;
+        public static final int action_next=0x7f08004a;
+        public static final int action_photo=0x7f08004d;
+        public static final int action_previous=0x7f080049;
+        public static final int action_remove_item=0x7f080048;
         public static final int action_settings=0x7f08002f;
+        /**  Actions 
+         */
+        public static final int action_toggle=0x7f080046;
         public static final int app_id=0x7f080032;
         public static final int app_name=0x7f08002e;
         /**   Title for notification shown when GooglePlayServices needs to be
@@ -684,10 +712,24 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f08000f;
+        public static final int badge1_desc=0x7f080057;
+        /**  Badges Names and Descriptions 
+         */
+        public static final int badge1_name=0x7f080056;
+        public static final int badge2_desc=0x7f080059;
+        public static final int badge2_name=0x7f080058;
+        public static final int badge3_desc=0x7f08005b;
+        public static final int badge3_name=0x7f08005a;
+        public static final int badge4_desc=0x7f08005d;
+        public static final int badge4_name=0x7f08005c;
         public static final int badge_duration=0x7f080034;
         public static final int badge_golpes=0x7f080033;
         public static final int badge_score=0x7f080035;
         public static final int badge_share=0x7f080036;
+        public static final int card_back_description=0x7f080054;
+        /**  Other strings 
+         */
+        public static final int card_back_title=0x7f080053;
         public static final int change_hand=0x7f080030;
         public static final int com_facebook_choose_friends=0x7f080024;
         public static final int com_facebook_dialogloginactivity_ok_button=0x7f080015;
@@ -769,11 +811,33 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f08000e;
+        /**  Accessibility-only descriptions 
+         */
+        public static final int description_image_1=0x7f080050;
+        public static final int description_image_2=0x7f080051;
+        public static final int description_zoom_touch_close=0x7f080052;
+        public static final int hello_world=0x7f08003f;
+        public static final int lorem_ipsum=0x7f080055;
+        /**  Messages 
+         */
+        public static final int message_empty_layout_changes=0x7f08004e;
+        public static final int message_zoom_touch_expand=0x7f08004f;
         public static final int notConnected=0x7f08003b;
         public static final int pajaShareType1=0x7f080037;
         public static final int pajaShareType2=0x7f080038;
         public static final int pajaShareType3=0x7f080039;
         public static final int pajaShareType4=0x7f08003a;
+        public static final int title_activity_badge_slide=0x7f08003e;
+        public static final int title_badge_detail=0x7f08003d;
+        public static final int title_badge_list=0x7f08003c;
+        public static final int title_card_flip=0x7f080041;
+        /**  Titles 
+         */
+        public static final int title_crossfade=0x7f080040;
+        public static final int title_layout_changes=0x7f080044;
+        public static final int title_screen_slide=0x7f080042;
+        public static final int title_template_step=0x7f080045;
+        public static final int title_zoom=0x7f080043;
         public static final int view_badges=0x7f080031;
     }
     public static final class style {

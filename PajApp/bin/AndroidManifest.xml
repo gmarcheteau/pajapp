@@ -2,18 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bigotapps.pajapp"
     android:versionCode="0"
-    android:versionName="0.5">
-    
+    android:versionName="0.5" >
+
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
-      
-      <!-- Internet Permissions -->
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" >
+    </uses-permission>
+
+    <!-- Internet Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
- 
+
     <!-- Network State Permissions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,8 +25,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.bigotapps.pajapp.MainActivity"
-            android:label="@string/app_name" 
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,35 +36,48 @@
         <activity
             android:name="com.bigotapps.pajapp.PajaCompleted"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:launchMode="standard">
+            android:launchMode="standard"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.bigotapps.pajapp.WallOfFame"
-            android:label="@string/app_name" 
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
-                <activity
+        <activity
+            android:name="com.bigotapps.pajapp.BadgeDetail"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.bigotapps.pajapp.SettingsActivity"
-            android:label="@string/app_name" 
-            android:screenOrientation="portrait"
-            >
-            
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".ParseDeepLinkActivity">
-		    <intent-filter>
-		        <action android:name="com.google.android.apps.plus.VIEW_DEEP_LINK" />
-		        <data android:scheme="vnd.google.deeplink" />
-		        <category android:name="android.intent.category.DEFAULT" />
-		        <category android:name="android.intent.category.BROWSABLE" />
-		    </intent-filter>
-		</activity>
-		
-		<activity android:name="com.facebook.LoginActivity"
-          android:label="@string/app_name" />
-		
-         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
-        
+        <activity android:name="com.bigotapps.pajapp.ParseDeepLinkActivity" >
+            <intent-filter>
+                <action android:name="com.google.android.apps.plus.VIEW_DEEP_LINK" />
+
+                <data android:scheme="vnd.google.deeplink" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+       <activity
+            android:name="com.bigotapps.pajapp.badgeGallery"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+         
     </application>
 
 </manifest>

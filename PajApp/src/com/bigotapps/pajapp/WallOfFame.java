@@ -28,7 +28,7 @@ public class WallOfFame extends Activity{
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.wall_of_fame);
+		setContentView(R.layout.wall_of_fame_2);
 		
 		//shared preferences, to store Best Scores and stuff
 				SharedPreferences prefs = this.getSharedPreferences(
@@ -46,10 +46,10 @@ public class WallOfFame extends Activity{
 		topScoreView.setText(topScore+" pts");
 	*/
 		//adjust visibility of badges
-		ImageView badgeDuration = (ImageView) findViewById(R.id.imageBadgeDuration2);
-		ImageView badgeScore = (ImageView) findViewById(R.id.imageBadgeScore2);
-		ImageView badgeGolpes = (ImageView) findViewById(R.id.imageBadgeGolpes2);
-		ImageView badgeShare = (ImageView) findViewById(R.id.imageBadgeShare2);
+		ImageView badgeDuration = (ImageView) findViewById(R.id.ImageBadgeDuration);
+		ImageView badgeScore = (ImageView) findViewById(R.id.ImageBadgeScore);
+		ImageView badgeGolpes = (ImageView) findViewById(R.id.ImageBadgeGolpes);
+		ImageView badgeShare = (ImageView) findViewById(R.id.ImageBadgeShare);
 		
 		if(!badgeScore_unlocked){
 			badgeScore.setVisibility(View.INVISIBLE);
@@ -118,19 +118,25 @@ public void fetchUserData(SharedPreferences prefs){
 
 
 public void onClick (View view){
-		ImageView animationTarget = (ImageView) view;
-	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
-		Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
-	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
-	    animationTarget.startAnimation(animation);
+	ImageView animationTarget = (ImageView) view;
+    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+    animationTarget.startAnimation(animation);
 	}
 
 public void onClick2 (View view){
 	ImageView animationTarget = (ImageView) view;
-    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
-	Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+	//Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
     //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
     animationTarget.startAnimation(animation);
+}
+
+public void getBadgeDetails(int badgeID){
+	//Intent i = new Intent(getApplicationContext(),BadgeDetail.class);
+	//i.putExtra("badgeID", String.valueOf(badgeID));
+	//startActivity(i);
 }
 
 

@@ -101,10 +101,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 			goSettings();
 			return true ;
 		case R.id.view_badges:
-			goBadges();
+			goGallery();
 			return true ;
 		case R.id.forcePajaComplete:
 			endPaja();
+			return true ;
+		case R.id.getAllBadges:
+			getAllBadges();
+			return true ;
+		case R.id.badgeGalleryDebug:
+			goGallery();
 			return true ;
 		default:
 			return false;
@@ -275,6 +281,23 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 		startActivity(i);
     }
+ public void goGallery(){
+		
+		mSensorManager.unregisterListener(this);
+    	Intent i = new Intent(getApplicationContext(),badgeGallery.class);
+		startActivity(i);
+    }
+    
+public void getAllBadges(){
+	SharedPreferences prefs = this.getSharedPreferences(
+		      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
+	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeScore_unlocked", true).commit();
+	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeDuration_unlocked", true).commit();
+	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", true).commit();
+	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+	quickToast("all badges unlocked");
+	}
+
     
  public void goSettings(){
 		

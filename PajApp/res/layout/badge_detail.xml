@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/badgeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="anim"
+        android:src="@drawable/badge_duration"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/badgeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/badgeView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:text="Badge Name"
+        android:textColor="@color/bigRed"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/badgeDesc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/badgeName"
+        android:layout_marginTop="20dp"
+        android:gravity="center|top"
+        android:text="Badge description blablbalbalbalaballabla"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/textUnlockBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/badgeView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="108dp"
+        android:background="@color/bigRed"
+        android:clickable="true"
+        android:gravity="center"
+        android:minHeight="50dp"
+        android:onClick="newPaja"
+        android:text="Play to unlock Badge"
+        android:textAllCaps="false"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigWhite"
+        android:textSize="30dp"
+        android:visibility="visible" />
+
+</RelativeLayout>
