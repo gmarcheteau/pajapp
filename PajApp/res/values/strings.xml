@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">PajApp beta</string>
     <string name="action_settings">Settings</string>
     <string name="change_hand">Change hand</string>
     <string name="view_badges">View badges</string>
+    <!-- real appID:298577350281191 -->
     <string name="app_id">298577350281191</string>
     <string name="badge_golpes">Badges Golpes</string>
     <string name="badge_duration">Badge Duration</string>
@@ -18,7 +20,7 @@
     <string name="title_badge_detail">Badge Detail</string>
     <string name="title_activity_badge_slide">BadgeSlideActivity</string>
     <string name="hello_world">Hello world!</string>
-    
+
     <!-- Titles -->
     <string name="title_crossfade">Simple Crossfade</string>
     <string name="title_card_flip">Card Flip</string>
@@ -51,8 +53,8 @@
     <string name="card_back_title">Angry Red Android</string>
     <string name="card_back_description"><![CDATA[Lorem ipsum dolor sit]]></string>
     <string name="lorem_ipsum"><![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et magna ut erat elementum cursus in quis ipsum. Nam faucibus ultrices eros, vel tempor leo semper sit amet. Duis magna quam, congue vitae interdum nec, condimentum ut lectus. Sed commodo venenatis eros a dignissim. Nunc adipiscing turpis nec magna venenatis at ultricies ipsum bibendum. Sed volutpat urna quis nisi vulputate egestas. Etiam eu dui a enim lacinia dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.\n\nPhasellus orci mi, eleifend nec congue id, volutpat at neque. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer semper velit vel leo rutrum sed fermentum elit porta.]]></string>
-	
-	<!-- Badges Names and Descriptions -->
+
+    <!-- Badges Names and Descriptions -->
     <string name="badge1_name">Badge Duration</string>
     <string name="badge1_desc">Desciption badge duration</string>
     <string name="badge2_name">Badge Golpes</string>
@@ -61,5 +63,6 @@
     <string name="badge3_desc">Desciption badge share</string>
     <string name="badge4_name">Badge Score</string>
     <string name="badge4_desc">Desciption badge score</string>
-    
+    <string name="title_activity_credits">Credits</string>
+
 </resources>

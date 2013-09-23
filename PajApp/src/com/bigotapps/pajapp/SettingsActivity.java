@@ -234,7 +234,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
 public void fbConnect(){
 	 Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
 	// start Facebook Login
-    Session.openActiveSession(this, true, new Session.StatusCallback() {
+	 Session.openActiveSession(this, true, new Session.StatusCallback() {
 
       // callback when session changes state
       @Override

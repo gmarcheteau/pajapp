@@ -112,6 +112,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.badgeGalleryDebug:
 			goGallery();
 			return true ;
+		case R.id.view_credits:
+			goCredits();
+			return true ;
 		default:
 			return false;
 		}
@@ -316,6 +319,14 @@ public void getAllBadges(){
 		Intent i = new Intent(getApplicationContext(),WallOfFame.class);
 		startActivity(i);
  }
+ 
+ public void goCredits(){
+		
+		mSensorManager.unregisterListener(this);
+
+		Intent i = new Intent(getApplicationContext(),Credits.class);
+		startActivity(i);
+}
     
     
     /**
