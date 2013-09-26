@@ -20,6 +20,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="credits"/>
+    <item
+        android:id="@+id/change_back"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="change back"/>
     
   <item
         android:id="@+id/debugOptions"

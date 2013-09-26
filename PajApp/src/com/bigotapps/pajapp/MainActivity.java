@@ -1,15 +1,25 @@
 package com.bigotapps.pajapp;
 
+import java.io.FileNotFoundException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +32,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-
+	private static final int RESULT_LOAD_IMAGE = 100;
 	/**
 	 * sensor stuff 
 	 */
@@ -51,7 +61,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal=30;
+	public float progressGoal=100;
 	public int freqCoeff=1;
 	public float avFreq=1;
 	
@@ -62,8 +72,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public long duration=1;
 	public long lastChange=1;
 	
-	
-	
+	/**SOUND
+	 */
+	SoundPool soundPool;
+	Integer soundId;
+	AudioManager mgr;
+	float volume;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +88,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		
+		loadSound();
+		volume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 	
 		if(this.getIntent().getExtras() != null){
 			//when user is coming from deep-linking
@@ -115,6 +131,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		case R.id.view_credits:
 			goCredits();
 			return true ;
+		case R.id.change_back:
+			changeBackground();
+			return true ;
 		default:
 			return false;
 		}
@@ -151,8 +170,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 		delay=System.currentTimeMillis()-lastSensorUpdate;
 		
 		//graphic element handlers
-		View back= findViewById(R.id.relLayout);
-		View hand = findViewById(R.id.ImageBadgeScore);
+		View back= findViewById(R.id.backOfPaja);
+		View hand = findViewById(R.id.ImageHand);
 		TextView dist = (TextView) findViewById(R.id.textViewProgress);
 		TextView slow = (TextView) findViewById(R.id.TextViewSlow);
 		TextView fast = (TextView) findViewById(R.id.TextViewFast);
@@ -206,6 +225,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 						back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
 						
 						lastChange=System.currentTimeMillis();
+							
+						playSound(volume,0.6f+getProgress()/200);
 
 						} 	
 				} //end of hand down
@@ -219,7 +240,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	}
 			   
     public void changeHands(){
-    	View hand = findViewById(R.id.ImageBadgeScore);
+    	View hand = findViewById(R.id.ImageHand);
     	ImageView iv = (ImageView) hand;
     	if(RIGHT_HAND){
     		iv.setImageResource(R.drawable.openhandleft);}
@@ -375,5 +396,98 @@ public void anim(View view){
 	Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
     //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
     animationTarget.startAnimation(animation);
+}
+public void loadSound(){
+	soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+	soundId = soundPool.load(getApplicationContext(), R.raw.a_short, 1);
+	 mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+	 soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener()
+	 {
+	     @Override
+	     public void onLoadComplete(SoundPool arg0, int arg1, int arg2)
+	     {
+	         quickToast("loaded");
+	         //launch sound
+	         playSound(volume,0.6f);
+	     }
+	 });
+	
+	}
+public void playSound(float volume,float speed){
+	soundPool.play(soundId, volume, volume, 1, -1, speed);
+}
+
+public void updateSound(float speed){
+	soundPool.setRate(soundId, speed);
+}
+
+public void changeBackground(){
+	Intent i = new Intent(
+	Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+	startActivityForResult(i, RESULT_LOAD_IMAGE);
+}
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+     
+    if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+        Cursor cursor = getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        
+        //
+        ImageView back= (ImageView) findViewById(R.id.backOfPaja);
+        //back.setBackgroundResource(R.drawable.badge_fire);
+        //back.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        try {
+			back.setImageBitmap(decodeUri(selectedImage));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        // String picturePath contains the path of selected Image
+    }
+
+
+}
+
+private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+
+    // Decode image size
+    BitmapFactory.Options o = new BitmapFactory.Options();
+    o.inJustDecodeBounds = true;
+    BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
+
+    // The new size we want to scale to
+    final int REQUIRED_SIZE = 140;
+
+    // Find the correct scale value. It should be the power of 2.
+    int width_tmp = o.outWidth, height_tmp = o.outHeight;
+    int scale = 1;
+    while (true) {
+        if (width_tmp / 2 < REQUIRED_SIZE
+           || height_tmp / 2 < REQUIRED_SIZE) {
+            break;
+        }
+        width_tmp /= 2;
+        height_tmp /= 2;
+        scale *= 2;
+    }
+
+    // Decode with inSampleSize
+    BitmapFactory.Options o2 = new BitmapFactory.Options();
+    o2.inSampleSize = scale;
+    return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+
 }
 }

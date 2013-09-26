@@ -564,31 +564,34 @@ containing a value of this type.
         public static final int FBShareButton=0x7f070037;
         public static final int FBSignIn=0x7f07003a;
         public static final int GooglePlusSigninButton=0x7f07003b;
-        public static final int ImageBadgeDuration=0x7f070042;
-        public static final int ImageBadgeGolpes=0x7f070041;
-        public static final int ImageBadgeScore=0x7f070009;
+        public static final int ImageBadgeDuration=0x7f070043;
+        public static final int ImageBadgeGolpes=0x7f070042;
+        public static final int ImageBadgeScore=0x7f070040;
         public static final int ImageBadgeShare=0x7f07003f;
+        public static final int ImageHand=0x7f07000c;
         public static final int NewPajaButton=0x7f07002c;
         public static final int ScrollView1=0x7f07003e;
         public static final int SwitchFB=0x7f07003d;
         public static final int TextNewHighScore=0x7f07002f;
         public static final int TextShareWith=0x7f070030;
-        public static final int TextView02=0x7f070040;
-        public static final int TextView03=0x7f070043;
-        public static final int TextViewFast=0x7f07000c;
-        public static final int TextViewSlow=0x7f07000b;
+        public static final int TextView02=0x7f070041;
+        public static final int TextView03=0x7f070044;
+        public static final int TextViewFast=0x7f07000b;
+        public static final int TextViewSlow=0x7f07000a;
         public static final int WOFButton=0x7f07002b;
         public static final int WhatsappButton=0x7f070031;
-        public static final int action_add_item=0x7f070045;
-        public static final int action_next=0x7f070047;
-        public static final int action_previous=0x7f070046;
-        public static final int action_settings=0x7f070048;
-        public static final int action_toggle=0x7f070044;
+        public static final int action_add_item=0x7f070046;
+        public static final int action_next=0x7f070048;
+        public static final int action_previous=0x7f070047;
+        public static final int action_settings=0x7f070049;
+        public static final int action_toggle=0x7f070045;
+        public static final int backOfPaja=0x7f070007;
         public static final int badgeDesc=0x7f070010;
-        public static final int badgeGalleryDebug=0x7f07004f;
+        public static final int badgeGalleryDebug=0x7f070051;
         public static final int badgeName=0x7f07000f;
         public static final int badgeView=0x7f07000e;
-        public static final int change_hand=0x7f070049;
+        public static final int change_back=0x7f07004d;
+        public static final int change_hand=0x7f07004a;
         public static final int com_facebook_login_activity_progress_bar=0x7f070015;
         public static final int com_facebook_picker_activity_circle=0x7f070014;
         public static final int com_facebook_picker_checkbox=0x7f070017;
@@ -609,12 +612,11 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_login_button=0x7f070027;
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f070025;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f070026;
-        public static final int debugOptions=0x7f07004c;
-        public static final int forcePajaComplete=0x7f07004d;
+        public static final int debugOptions=0x7f07004e;
+        public static final int forcePajaComplete=0x7f07004f;
         public static final int gPlusShareButton=0x7f070032;
-        public static final int getAllBadges=0x7f07004e;
+        public static final int getAllBadges=0x7f070050;
         public static final int hybrid=0x7f070004;
-        public static final int imageView1=0x7f070007;
         public static final int large=0x7f070006;
         public static final int mailButton=0x7f07002d;
         public static final int none=0x7f070000;
@@ -636,11 +638,11 @@ containing a value of this type.
         public static final int textUnlockBadge=0x7f070011;
         public static final int textViewFBname=0x7f070038;
         public static final int textViewGPlusname=0x7f070039;
-        public static final int textViewProgress=0x7f07000a;
+        public static final int textViewProgress=0x7f070009;
         public static final int textViewScore=0x7f07002e;
         public static final int tv=0x7f070028;
-        public static final int view_badges=0x7f07004a;
-        public static final int view_credits=0x7f07004b;
+        public static final int view_badges=0x7f07004b;
+        public static final int view_credits=0x7f07004c;
     }
     public static final class layout {
         public static final int activity_credits=0x7f030000;
@@ -675,10 +677,14 @@ containing a value of this type.
         public static final int main=0x7f0b0004;
     }
     public static final class raw {
-        public static final int close=0x7f050000;
-        public static final int open=0x7f050001;
-        public static final int shake=0x7f050002;
-        public static final int staple=0x7f050003;
+        public static final int a_100ms=0x7f050000;
+        public static final int a_200ms=0x7f050001;
+        public static final int a_short=0x7f050002;
+        public static final int close=0x7f050003;
+        public static final int open=0x7f050004;
+        public static final int shake=0x7f050005;
+        public static final int staple=0x7f050006;
+        public static final int zipp=0x7f050007;
     }
     public static final class string {
         public static final int action_add_item=0x7f080047;
