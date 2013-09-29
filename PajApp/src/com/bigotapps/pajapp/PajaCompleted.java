@@ -17,7 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +66,10 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.paja_completed);
 		
-		 mPlusClient = new PlusClient.Builder(this, this, this).build();
+		View background = findViewById(R.id.relLayoutComp);
+		anim(background);
+		 
+		mPlusClient = new PlusClient.Builder(this, this, this).build();
 		 // Progress bar to be displayed if the connection failure is not resolved.
 	        mConnectionProgressDialog = new ProgressDialog(this);
 	        mConnectionProgressDialog.setMessage("Signing in, biatch...");
@@ -417,5 +423,12 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	 }
 	
 
+	public void anim(View view){
+		View animationTarget = view;
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+		//Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+	    Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+	    animationTarget.startAnimation(animation);
+	}
 }
 

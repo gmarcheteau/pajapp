@@ -2,24 +2,25 @@ package com.bigotapps.pajapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
-public class Credits extends Activity implements View.OnLongClickListener {
+public class Credits extends Activity {
 
 	MediaPlayer mp;
+	View logo;
+	View scrollview;
 	
 	
 	@Override
@@ -31,8 +32,38 @@ public class Credits extends Activity implements View.OnLongClickListener {
 	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 	        setContentView(R.layout.activity_credits);
-	        mp = MediaPlayer.create(getApplicationContext(), R.raw.zipp);
-		
+	       
+	        scrollview = findViewById(R.id.horizontalScrollView1);
+	        scrollview.setVisibility(View.INVISIBLE);
+	        logo = findViewById(R.id.fappLogo);
+	        bounce(logo);
+	    	        
+	        Thread timer = new Thread() { //new thread         
+	            public void run() {
+	                //Boolean b = true;
+	                try {
+	                    
+	                        sleep(2000);
+	                        runOnUiThread(new Runnable() {  
+	                        @Override
+	                        public void run() {
+	                            // TODO Auto-generated method stub
+	                            moveup(logo);
+	                            fadeIn(scrollview);
+	                                          }
+	                    });
+
+	                   // while (b == true);
+	                } catch (InterruptedException e) {
+	                    e.printStackTrace();
+	                }
+	                finally {
+	                }
+	            };
+	        };
+	        timer.start();  
+	        
+	        
 	}
 
 	@Override
@@ -42,23 +73,46 @@ public class Credits extends Activity implements View.OnLongClickListener {
 		return true;
 	}
 	
-	public void anim(View view){
+	public void moveup(View view){
 		
 		//mp.start();
-		ImageView animationTarget = (ImageView) view;
+		View animationTarget = view;
 	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
 		//Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
-	    Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
-	    animationTarget.startAnimation(animation);
-	    playSound(1.5f);
+		Animation animation = AnimationUtils.loadAnimation(this, R.anim.moveup);
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+	    animationTarget.startAnimation(animation);		
+	}
+	
+public void fadeIn(View view){
 		
+		//mp.start();
+		View animationTarget = view;
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+		//Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+		Animation animation = AnimationUtils.loadAnimation(this, R.anim.fadein);
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+	    animationTarget.startAnimation(animation);		
+	}
+	
+	
+	public void bounce(View view){
+		
+		//mp.start();
+		View animationTarget = view;
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
+		Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+		//Animation animation = AnimationUtils.loadAnimation(this, R.anim.moveup);
+	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
+	    animationTarget.startAnimation(animation);
+	    playSound(0.6f);
 	}
 	public void playSound(float speed){
 		
 	final float playbackSpeed=speed;
 	final SoundPool soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 
-	final Integer soundId = soundPool.load(getApplicationContext(), R.raw.a_short, 1);
+	final Integer soundId = soundPool.load(getApplicationContext(), R.raw.zipp, 1);
 	 AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 	 final float volume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
@@ -73,15 +127,27 @@ public class Credits extends Activity implements View.OnLongClickListener {
 	
 	}
 	
-	@Override
-	public boolean onLongClick(View view){
-		ImageView animationTarget = (ImageView) view;
-	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
-		Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
-	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
-	    animationTarget.startAnimation(animation);
-	    playSound(2f);
-	    return true;
+	
+	public void onClick(View view){
+		 switch(view.getId()){
+			case R.id.arcadeButton:
+				startPaja();
+				break;	
+			case R.id.settingsButton:
+				goSettings();
+				break;	
+			
+	 }
 }
+	
+	
+ public void startPaja(){
+		   	Intent i = new Intent(getApplicationContext(),MainActivity.class);
+			startActivity(i);
+	    }
+ public void goSettings(){
+	   	Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+		startActivity(i);
+ }
 	
 }

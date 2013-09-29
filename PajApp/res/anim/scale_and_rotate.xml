@@ -16,7 +16,7 @@
  
     <!-- Rotate 360 degrees -->
     <rotate
-        android:duration="200"
+        android:duration="500"
         android:fromDegrees="0"
         android:pivotX="50%"
         android:pivotY="50%"
