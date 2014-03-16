@@ -19,16 +19,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusClient.OnAccessRevokedListener;
+
+
 //import android.app.DownloadManager.Request;
 //import android.service.textservice.SpellCheckerService.Session;
 
@@ -57,9 +54,12 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         
         findViewById(R.id.GooglePlusSigninButton).setOnClickListener(this);
         
-        mPlusClient = new PlusClient.Builder(this, this, this)
-        .setVisibleActivities("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
-        .build();
+        mPlusClient =
+        	    new PlusClient.Builder(this, this, this).setActions(
+        	        "http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
+        	        .setScopes("PLUS_LOGIN") // Space separated list of scopes
+        	        .build();
+        
      // Progress bar to be displayed if the connection failure is not resolved.
         mConnectionProgressDialog = new ProgressDialog(this);
         mConnectionProgressDialog.setMessage("Signing in, biatch...");
@@ -234,6 +234,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
 public void fbConnect(){
 	 Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
 	// start Facebook Login
+	
+/*	 
 	 Session.openActiveSession(this, true, new Session.StatusCallback() {
 
       // callback when session changes state
@@ -261,7 +263,7 @@ public void fbConnect(){
 	        fbname.setText("FB session not opened");
       }
     });
-	
+*/	
 }
 
 public void gPlusConnect(){

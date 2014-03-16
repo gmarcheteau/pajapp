@@ -84,7 +84,7 @@
         android:layout_alignTop="@+id/imageView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="113dp"
-        android:text="Dale duro!!"
+        android:text="@string/inPajaMessage1"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/bigWhite"
         android:textColorHint="@color/bigWhite"

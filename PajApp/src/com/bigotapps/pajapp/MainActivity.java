@@ -24,6 +24,8 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -102,6 +104,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
+		 requestWindowFeature(Window.FEATURE_NO_TITLE);
+	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.activity_main);
 		
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -244,11 +250,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 					    	redFadeOut--;
 					    	
 					    	//Progress penalty for Pain activation
-					    	progress=progress-10;
+					    	progress=Math.max(0,progress-10);
 					    	
 					    	// Vibrate according to pattern (-1 means don't repeat)
 					    	if(dolor!=true){
-					    		v.vibrate(200);
+					    		v.vibrate(100);
 					    	}
 					    	dolor=true;
 					    	cmessage.setText("DOLOR!!!!");						
@@ -345,14 +351,14 @@ public class MainActivity extends Activity implements SensorEventListener {
     	
     	float vprogress;
     	
-    	if(progress==0 && i<0){
+    	if(progress==0 && i<=0){
     		progress=0;
     	}else if(progress>0 && i<0){
-    		progress=progress+i;
+    		progress=Math.max(0, progress+i);
     	}else{
         	if(timeSinceLastChange!=0){
         		vprogress=(1000/timeSinceLastChange)*factorMult;
-            	progress=progress+vprogress;
+            	progress=Math.max(0,progress+vprogress);
             	//progress=progress+20;       	
         	}    			
     	}
@@ -443,14 +449,14 @@ public class MainActivity extends Activity implements SensorEventListener {
     	//quickToast(Float.toString(freqCoeff));
     	
     	if (freqCoeff<0){
-    		progress+=freqCoeff*timeSinceLastChange*1/300;
+    		progress=Math.max(0, progress+freqCoeff*timeSinceLastChange*1/300);
     	}
     	
     	else 
     		{
-    		progress+=frequency*freqCoeff*1/10;
+    		progress=Math.max(0,progress+frequency*freqCoeff*1/10);
     		}
-    	progress=Math.max(progress,0);
+    	//progress=Math.max(progress,0);
     	return progress;
     }
     

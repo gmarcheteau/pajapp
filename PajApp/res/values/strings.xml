@@ -43,6 +43,7 @@
     <!-- Messages -->
     <string name="message_empty_layout_changes">Add an item above to get started.</string>
     <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
+    <string name="inPajaMessage1">Fapp Away!</string>
 
     <!-- Accessibility-only descriptions -->
     <string name="description_image_1">Image 1</string>
