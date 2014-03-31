@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
 public class Credits extends Activity {
 
 	public MediaPlayer mp;
@@ -37,7 +36,7 @@ public class Credits extends Activity {
 	        logo = findViewById(R.id.fappLogo);
 	        bounce(logo);
 	        
-	        mp = MediaPlayer.create(this, R.raw.start);
+	        mp = MediaPlayer.create(this, R.raw.zipp);
 	    	        
 	        Thread timer = new Thread() { //new thread         
 	            public void run() {
@@ -62,7 +61,7 @@ public class Credits extends Activity {
 	                }
 	            };
 	        };
-	        timer.start();          
+	        timer.start();
 	}
 
 	@Override
@@ -154,7 +153,8 @@ public class Credits extends Activity {
 			case R.id.settingsButton:
 				playSound(R.raw.staple, 1f);
 				mp.release();
-				goSettings();
+				//goSettings();
+				testDrawer();
 				break;	
 			case R.id.fappButtonCredits:
 				playSound(R.raw.staple, 1f);
@@ -164,11 +164,16 @@ public class Credits extends Activity {
 			case R.id.shareButtonCredits:
 				playSound(R.raw.staple, 1f);
 				mp.release();
-				share();
+				//share();
+				goFBShare();
 				break;
 			case R.id.fappLogo:
 				//playSound(R.raw.staple, 1f);
 				bounce(logo);
+				break;
+			case R.id.buttonFakeFapp:
+				//playSound(R.raw.staple, 1f);
+				fakePaja();
 				break;	
 			
 	 }
@@ -176,12 +181,12 @@ public class Credits extends Activity {
 	
 	
 	 public void startPaja(){
-		Toast.makeText(this, "START PAJA", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "START PAJA", Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(this,com.bigotapps.pajapp.MainActivity.class);
 		startActivity(i);
 		    }
 	 public void goSettings(){
-		Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(this,com.bigotapps.pajapp.SettingsActivity.class);
 		startActivity(i);
  }
@@ -190,6 +195,25 @@ public class Credits extends Activity {
 			//Intent i = new Intent(this,MainActivity.class);
 			//startActivity(i);
 			    }
+	 public void goFBShare(){
+			//Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			Intent i = new Intent(this,com.bigotapps.pajapp.FBShare.class);
+			startActivity(i);
+	 }
+	 
+	 public void fakePaja(){
+		 Intent i = new Intent(getApplicationContext(),PajaCompleted.class);
+			i.putExtra("score", "5000");
+			i.putExtra("duration", "100");
+			i.putExtra("golpes", "2000");
+			startActivity(i);
+	 }
+	 
+	 //temp - to delete luego
+	 public void testDrawer(){
+		 Intent i = new Intent(getApplicationContext(),HomeScreen.class);
+			startActivity(i);
+	 }
 	 
 	
 }

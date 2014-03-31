@@ -4,34 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/Black" >
 
-    <TextView
-        android:id="@+id/textViewFBname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textViewGPlusname"
-        android:layout_below="@+id/textViewGPlusname"
-        android:layout_marginTop="19dp"
-        android:text="Facebook disconnected"
-        android:textColor="@color/bigWhite" />
-
-    <com.facebook.widget.LoginButton
-        android:id="@+id/FBSignIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:onClick="onClick" />
-
     <com.google.android.gms.common.SignInButton
         android:id="@+id/GooglePlusSigninButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/FBSignIn"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/FBSignIn"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="64dp"
         android:onClick="onClick" >
-
     </com.google.android.gms.common.SignInButton>
 
     <Switch
@@ -41,21 +21,34 @@
         android:layout_below="@+id/GooglePlusSigninButton"
         android:layout_centerHorizontal="true" />
 
-    <Switch
-        android:id="@+id/SwitchFB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/switchGPlus"
-        android:layout_below="@+id/FBSignIn" />
-
     <TextView
         android:id="@+id/textViewGPlusname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/FBSignIn"
-        android:layout_below="@+id/SwitchFB"
-        android:layout_marginTop="62dp"
+        android:layout_alignRight="@+id/GooglePlusSigninButton"
+        android:layout_below="@+id/switchGPlus"
+        android:layout_marginTop="136dp"
         android:text="G+ disconnected"
         android:textColor="@color/bigWhite" />
-    
+
+    <ImageButton
+        android:id="@+id/fbButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/switchGPlus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:onClick="onClick"
+        android:src="@drawable/com_facebook_logo" />
+
+    <TextView
+        android:id="@+id/textViewFBname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewGPlusname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:text="Facebook disconnected"
+        android:textColor="@color/bigWhite" />
+
 </RelativeLayout>

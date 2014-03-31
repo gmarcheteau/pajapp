@@ -1,7 +1,8 @@
 package com.bigotapps.pajapp;
 
 
-import android.app.Activity;
+import java.util.Arrays;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,21 +23,27 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.OpenGraphAction;
+import com.facebook.model.OpenGraphObject;
+import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusShare;
 
 
-public class PajaCompleted extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
+public class PajaCompleted extends FragmentActivity implements ConnectionCallbacks, OnConnectionFailedListener {
 
-	public long[] pattern = {1000,100};
+	public long[] pattern = {1000};
 
 
 	Integer score;
@@ -52,7 +61,7 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	Integer badgeGolpesTarget=200;
 	public boolean wantedToShare=false;
 	
-    private static final String TAG = "ExampleActivity";
+    private static final String TAG = "GregBug";
     private static final int REQUEST_CODE_RESOLVE_ERR = 9000;
 
     private ProgressDialog mConnectionProgressDialog;
@@ -61,65 +70,89 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
     
     public ImageButton mShareButton; 
     SharedPreferences prefs;
+    private UiLifecycleHelper uiHelper;
+  
+
+	protected void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		Log.i(TAG,"SESSION CHANGED??");
+		// TODO Auto-generated method stub	
+	}
+	 
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
+            mConnectionResult = null;
+            
+            if(wantedToShare){
+            	Log.i(TAG,"WANTS TO SHARE - FROM onActivityResult");
+            	gplusShare();
+            }
+            mPlusClient.connect();
+        }
+    }
 	
+	/**
+	 * LifeCycle
+	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.paja_completed);
-		
-		View background = findViewById(R.id.relLayoutComp);
-		anim(background);
-		 
-		mPlusClient = new PlusClient.Builder(this, this, this).build();
+	
+		 uiHelper = new UiLifecycleHelper(this, callback);
+		 uiHelper.onCreate(savedInstanceState);
+		 wantedToShare=false;
+	  
+		//BUILD GPLUS CLIENT
+		 mPlusClient = new PlusClient.Builder(this, this, this)
+         .setScopes(Scopes.PLUS_LOGIN)  // Space separated list of scopes
+         .build();
 		 // Progress bar to be displayed if the connection failure is not resolved.
-	        mConnectionProgressDialog = new ProgressDialog(this);
-	        mConnectionProgressDialog.setMessage("Signing in, biatch...");
-
+	      mConnectionProgressDialog = new ProgressDialog(this);
+	      mConnectionProgressDialog.setMessage(getString(R.string.gplus_connect));
+		 
 		 mShareButton = (ImageButton) findViewById(R.id.gPlusShareButton);
+		 
+		// Get instance of Vibrator from current Context
+			Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		 
 		//shared preferences, to store Best Scores and stuff
 			prefs = this.getSharedPreferences("com.bigotapps.pajapp", Context.MODE_PRIVATE);
 		
-		// Get instance of Vibrator from current Context
-		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		
+		//get Pajameters	
 		if(this.getIntent().getExtras() != null){
 			//use paja parameters
 			duration = Long.valueOf(this.getIntent().getExtras().getString("duration"));
 			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
-
 			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
+			//show score
 			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
 			scoreView.setText(score+" pts");
-			
-			//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
+			Log.i(TAG,"Paja score: "+ score +"\n Duration: " + duration + "s");
 		}
 		
+		//update Preferences
 		fetchPrefs(prefs);
-		updatePrefs(prefs); //incl badgess
+		updatePrefs(prefs); //incl badges
 		
 		boolean FB_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.FB_Connect", false);
 		boolean GP_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.gPlusConnect", false);
 		
 		if(GP_CONNECT){
-			gPlusConnect();
+			//gPlusConnect();
 		}
-		
-		
+	
 		// Vibrate according to pattern (-1 means don't repeat)
 				v.vibrate(pattern,-1);
 				playSound();
 		
-
-
 	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
 		case R.id.change_hand:
@@ -137,7 +170,6 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			return false;
 		}
 	}
-	
 	@Override
 	protected void onStop() {
 	    super.onStop();
@@ -145,7 +177,13 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 	    //mShareButton.setEnabled(false);
 	    
 	}
-	
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    mPlusClient.disconnect();
+	    //mShareButton.setEnabled(false);
+	    
+	}
 	@Override
 	protected void onResume(){
 		super.onResume();
@@ -157,59 +195,13 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		
 		boolean FB_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.FB_Connect", false);
 		boolean GP_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.gPlusConnect", false);
+		
 		if(GP_CONNECT){
-			gPlusConnect();
+			//gPlusConnect();
 		}
+		
 	}
-
-	public void playSound(){
-		MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.open);
-		mp.start();
-	}
-	
-	public void mailPaja(){
-		hasShared=true;
-		prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("text/html");
-		intent.putExtra(Intent.EXTRA_SUBJECT, "Te mandan una paja");
-		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts");
-		startActivity(Intent.createChooser(intent, "Share Paja"));
-	}
-	
-	public void WhatsAppShare() {
-
-	    Intent waIntent = new Intent(Intent.ACTION_SEND);
-	    waIntent.setType("text/plain");
-	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts";
-	    waIntent.setPackage("com.whatsapp");
-	    if (waIntent != null) {
-	    	hasShared=true;
-	    	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
-	    	waIntent.putExtra(Intent.EXTRA_TEXT, text);//
-	        startActivity(Intent.createChooser(waIntent, "Share with"));
-	    } else {
-	        Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
-	                .show();
-	    }
-
-	}
-	
-	
-	 public void newPaja(){
-	    	Intent i = new Intent(getApplicationContext(),MainActivity.class);
-			startActivity(i);
-	    }
-	 
-	 public void WoF(){
-		 	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
-		 	i.putExtra("score", Long.toString(score));
-		 	i.putExtra("duration", duration);
-		 	//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
-		 	startActivity(i);
-	    }
-	 
-	 public void onClick(View view){
+	public void onClick(View view){
 		 switch(view.getId()){
 			case R.id.gPlusShareButton:
 				gplusShare();
@@ -227,119 +219,34 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 				WoF();
 				break;
 			case R.id.FBShareButton:
-				quickToast("coming soon");
+				fbShare();
 				break;
-				
-			
 	 }
 }
-	 
-	 public void gplusShare() {
-		 
-		 if (!mPlusClient.isConnected()) {
-			 Toast.makeText(getApplicationContext(), "notConnectedCalled", Toast.LENGTH_SHORT).show();
-			 //boolean to call gplusShare when connected (if called here will cause thread issues)
-			 wantedToShare=true;
-			 prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", true).commit();
-			 gPlusConnect();
-			 
-		 }
-		 else{
-			 final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-	      
-			 //if G+ installed
-			 if (errorCode == ConnectionResult.SUCCESS) {
-	    	  hasShared=true;
-	    	  prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
-	    	  PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);
+	public void playSound(){
+			MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.open);
+			mp.start();
+		}
+	
+	/**
 
-	       // Set call-to-action metadata.
-	       /*
-	          builder.addCallToAction(
-	              "REPLY", // call-to-action button label 
-	              Uri.parse("http://plus.google.com/pages/create"), // call-to-action url (for desktop use)
-	              "pajaBack" // call to action deep-link ID (for mobile use), 512 characters or fewer );
-	          */
-	          
-	          // Set the content url (for desktop use).
-	          builder.setContentUrl(Uri.parse("http://www.google.frhttp://commons.wikimedia.org/wiki/File:Clenched_human_fist.png"));
-
-	          // Set the target deep-link ID (for mobile use).
-	          builder.setContentDeepLinkId("pajaBack",
-	                 null, null, null);
-	        
-	          // Set the share text.
-	          builder.setText("I'm sending you an appJob!");
-
-	          startActivityForResult(builder.getIntent(), 0);
-	   
-	      } else {
-	          // Prompt the user to install the Google+ app.
-	    	  GooglePlayServicesUtil.getErrorDialog(errorCode, this, 0).show();
-	      }
-		 }
-	 }
-	 
-
-	    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-	    	if (mConnectionProgressDialog.isShowing()) {
-	            // The user clicked the sign-in button already. Start to resolve
-	            // connection errors. Wait until onConnected() to dismiss the
-	            // connection dialog.
-	            if (result.hasResolution()) {
-	              try {
-	                       result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-	               } catch (SendIntentException e) {
-	                       mPlusClient.connect();
-	               }
-	            }
-	          }
-	          // Save the result and resolve the connection failure upon a user click.
-	          mConnectionResult = result;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-        if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
-            mConnectionResult = null;
-            
-            if(wantedToShare){
-            	Toast.makeText(getApplicationContext(), "WANTS TO SHARE", Toast.LENGTH_SHORT).show();
-            	gplusShare();
-            }
-            mPlusClient.connect();
-        }
-    }
-
-    //@Override
-    public void onConnected(Bundle b) {
-    	mConnectionProgressDialog.dismiss();
-        String accountName = mPlusClient.getAccountName();
-        Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_LONG).show();
-        mShareButton.setEnabled(true);
-        
-    }
-
-    @Override
-    public void onDisconnected() {
-	    	Log.d(TAG, "disconnected");
-	    	mShareButton.setEnabled(false);
-	    }
-	 
-	 
-	 /* QuickToaster
-	 * for runtime debugging etc 
+	 * Navigation
 	 */
-	public void quickToast (String message){
-		 Context context = getApplicationContext();
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(context, message, duration);
-			toast.show();
-	 }
+	public void newPaja(){
+    	Intent i = new Intent(getApplicationContext(),MainActivity.class);
+		startActivity(i);
+    }
+	public void WoF(){
+	 	Intent i = new Intent(getApplicationContext(),WallOfFame.class);
+	 	i.putExtra("score", Long.toString(score));
+	 	i.putExtra("duration", duration);
+	 	//quickToast("Paja score: "+ score +"\n Duration: " + duration + "s");
+	 	startActivity(i);
+    }
 	
-	
-	
+	/**
+	 * Preference Management
+	 */
 	public void updatePrefs(SharedPreferences prefs){
 			prefs.edit().putLong("com.bigotapps.pajapp.topscore",Math.max(score, topScore)).commit();
 			prefs.edit().putLong("com.bigotapps.pajapp.topduration",Math.max(duration, topDuration)).commit();
@@ -348,6 +255,12 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 			fetchPrefs(prefs); //need to re-fetch in order to update local values tested in updateBadges 
 			updateBadges(prefs);
 		}
+	public void fetchPrefs(SharedPreferences prefs){
+		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
+		topGolpes=prefs.getLong("com.bigotapps.pajapp.topgolpes", 0);
+		topDuration=prefs.getLong("com.bigotapps.pajapp.topduration", 0);
+		hasSharedPref=prefs.getBoolean("com.bigotapps.pajapp.hasshared", false);
+	}
 	
 	
 	public void updateBadges(SharedPreferences prefs){
@@ -374,44 +287,105 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		}
 	}
 	
-
-
-	
-	public void fetchPrefs(SharedPreferences prefs){
-		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
-		topGolpes=prefs.getLong("com.bigotapps.pajapp.topgolpes", 0);
-		topDuration=prefs.getLong("com.bigotapps.pajapp.topduration", 0);
-		hasSharedPref=prefs.getBoolean("com.bigotapps.pajapp.hasshared", false);
+	/**
+	 * Facebook
+	 */
+	public void fbDialog(){
+		FragmentManager manager= getSupportFragmentManager();
+		FBDialog fbDialog=new FBDialog();
+		fbDialog.show(manager, "fbDialog");
 	}
-	
-	
+	public void fbShare(){
+		
+		OpenGraphObject fapp = OpenGraphObject.Factory.createForPost("pajappbeta:fapp");
+		fapp.setType("fapp");
+		fapp.setTitle("Fapp");
+		fapp.getData().setProperty("duration", String.valueOf(duration));
+		fapp.getData().setProperty("score", String.valueOf(score));
+		
+		String url="http://www.nolandalla.com/wp-content/uploads/2014/01/clenched-fist.jpg";
+		fapp.setImageUrls(Arrays.asList(url));
+		
+		OpenGraphAction action = OpenGraphAction.Factory.createForPost("pajappbeta:perform");
+		action.setProperty("fapp", fapp);
 
+		FacebookDialog shareDialog = new FacebookDialog.OpenGraphActionDialogBuilder(this,action,"fapp")
+		        .build();
+		uiHelper.trackPendingDialogCall(shareDialog.present());
+		
+		}
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		    @Override
+		    public void call(Session session, SessionState state, Exception exception) {
+		        onSessionStateChange(session, state, exception);
+		    }
+		};
+
+	/**
+	 * Google Plus
+	 */
 	public void gPlusConnect(){
 		if(!isNetworkConnected()){
-			Toast.makeText(getApplicationContext(), R.string.notConnected, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.notConnected, Toast.LENGTH_SHORT).show();
 		}
 		else{	
 		mPlusClient.connect();
 		
-		if(!mPlusClient.isConnected()){
-			if (mConnectionResult == null) {
-	           //mConnectionProgressDialog.show();
-	        } else {
-	            try {
-	                mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-	            } catch (SendIntentException e) {
-	                // Try connecting again.
-	                mConnectionResult = null;
-	                mPlusClient.connect();
-	            }
-	        }
-
-		}
+		if (!mPlusClient.isConnected()) {
+            if (mConnectionResult == null) {
+                mConnectionProgressDialog.show();
+            } else {
+                try {
+                       mConnectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
+                } catch (SendIntentException e) {
+                    // Try connecting again.
+                    mConnectionResult = null;
+                    mPlusClient.connect();
+                }
+            }
+         }
 		else Toast.makeText(this.getApplicationContext(), "G+ already connected", Toast.LENGTH_SHORT).show();
 		}
-	}
+		
+	}	
+	public void gplusShare() {	 
+		
+		 if (!mPlusClient.isConnected()) {
+			 Log.w("GregBug", "GPlus not connected. Calling gPlusConnect().");
+			 //boolean to call gplusShare when connected (if called here will cause thread issues)
+			 wantedToShare=true;
+			 prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", true).commit();
+			 gPlusConnect();
+			 
+		 }
+		 else{
+			 final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+			 //if G+ installed
+			 if (errorCode == ConnectionResult.SUCCESS) {
+		    	  hasShared=true;
+		    	  prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+		    	     	  
+		    	 PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);	             
+		         builder.addCallToAction("CHALLENGE",Uri.parse("https://plus.google.com/u/0/106383952060977394931"),"pajaBack");
 	
+		         builder.setContentUrl(Uri.parse("https://plus.google.com/u/0/106383952060977394931"));
+		         
+		         // Set the target deep-link ID (for mobile use).
+		         builder.setContentDeepLinkId("pajaBack",
+		                 null, null, null);
+		        
+		          // Set the share text.
+		         String messageGPlusPost = getString((R.string.messageGPlus)) + "\n" + String.valueOf(score) + " pts,"+" "+String.valueOf(duration)+"s"; 
+		          builder.setText(messageGPlusPost);
 	
+		          startActivityForResult(builder.getIntent(), 0);
+	   
+		      } else {
+		          // Prompt the user to install the Google+ app.
+		    	  GooglePlayServicesUtil.getErrorDialog(errorCode, this, 0).show();
+		      }
+		 }
+	 }
 	private boolean isNetworkConnected() {
 		  ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		  NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -421,14 +395,82 @@ public class PajaCompleted extends Activity implements ConnectionCallbacks, OnCo
 		  } else
 		   return true;
 	 }
-	
+    @Override
+	public void onConnected(Bundle b) {
+    	mConnectionProgressDialog.dismiss();
+        String accountName = mPlusClient.getAccountName();
+        Log.w(TAG,accountName + " is connected.");
+        mShareButton.setEnabled(true); 
+        if(wantedToShare){
+			Log.i(TAG,"Wants to share, calling gplusShare again.");
+			gplusShare();
+		}
+        
+    }
+    @Override
+    public void onDisconnected() {
+	    	Log.d(TAG, "G+ disconnected");
+	    	mShareButton.setEnabled(false);
+	    }
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+	    	if (mConnectionProgressDialog.isShowing()) {
+	            // The user clicked the sign-in button already. Start to resolve
+	            // connection errors. Wait until onConnected() to dismiss the
+	            // connection dialog.
+	            if (result.hasResolution()) {
+	              try {
+	                       result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+	               } catch (SendIntentException e) {
+	                       mPlusClient.connect();
+	               }
+	            }
+	          }
+	          // Save the result and resolve the connection failure upon a user click.
+	          mConnectionResult = result;
+    }
+    
+    /**
+	 * Whatsapp
+	 */
+    public void WhatsAppShare() {
+	    Intent waIntent = new Intent(Intent.ACTION_SEND);
+	    waIntent.setType("text/plain");
+	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts";
+	    waIntent.setPackage("com.whatsapp");
+	    if (waIntent != null) {
+	    	hasShared=true;
+	    	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+	    	waIntent.putExtra(Intent.EXTRA_TEXT, text);//
+	        startActivity(Intent.createChooser(waIntent, "Share with"));
+	    } else {
+	        Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
+	                .show();
+	    }
 
-	public void anim(View view){
+	}
+   
+    /**
+	 * Mail
+	 */
+    public void mailPaja(){
+		hasShared=true;
+		prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/html");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Te mandan una paja");
+		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts");
+		startActivity(Intent.createChooser(intent, "Share Paja"));
+	}
+    
+    public void anim(View view){
 		View animationTarget = view;
 	    //Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_around_center);
 		//Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
 	    Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
 	    animationTarget.startAnimation(animation);
 	}
+	
+	
 }
 

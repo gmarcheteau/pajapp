@@ -68,53 +68,23 @@
         android:textSize="30sp"
         android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/TextShareWith"
+    <ImageButton
+        android:id="@+id/FBShareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/WhatsappButton"
-        android:layout_alignLeft="@+id/gPlusShareButton"
-        android:layout_marginBottom="26dp"
-        android:text="Share with:"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigRed"
-        android:textSize="30sp" />
-
-    <RadioGroup
-        android:id="@+id/pajaShareTypeRadio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/TextShareWith"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="34dp" >
-
-        <RadioButton
-            android:id="@+id/radio0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/pajaShareType1" />
-
-        <RadioButton
-            android:id="@+id/radio1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pajaShareType2" />
-
-        <RadioButton
-            android:id="@+id/radio2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pajaShareType3" />
-    </RadioGroup>
+        android:layout_below="@+id/TextNewHighScore"
+        android:layout_marginTop="81dp"
+        android:layout_toRightOf="@+id/textViewScore"
+        android:background="@color/bigWhite"
+        android:onClick="onClick"
+        android:src="@drawable/fbicon_small" />
 
     <ImageButton
         android:id="@+id/WhatsappButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/relLayoutSharing"
+        android:layout_alignTop="@+id/FBShareButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="18dp"
         android:background="@color/bigWhite"
         android:onClick="onClick"
         android:src="@drawable/whatsapp_logo_small" />
@@ -123,20 +93,10 @@
         android:id="@+id/gPlusShareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextNewHighScore"
         android:layout_alignTop="@+id/WhatsappButton"
-        android:layout_toLeftOf="@+id/textViewScore"
         android:background="@color/bigWhite"
         android:onClick="onClick"
         android:src="@drawable/gplusicon_small" />
-
-    <ImageButton
-        android:id="@+id/FBShareButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TextShareWith"
-        android:layout_toRightOf="@+id/textViewScore"
-        android:background="@color/bigWhite"
-        android:onClick="onClick"
-        android:src="@drawable/fbicon_small" />
 
 </RelativeLayout>

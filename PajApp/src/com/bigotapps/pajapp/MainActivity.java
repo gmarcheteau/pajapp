@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,20 +42,22 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	public int sensorSensitivity=6;
+	public int sensorSensitivity=2;
 	/**
 	 * Minimum delay between sensor readings
 	 * To avoid conflicts 
 	 */
 	public long lastSensorUpdate = 1;
-	public long delay =1;
+	public long delay=1000;
 	public float frequency=1;
 	public float frequency_previous=1;
-	public long minDelay = 2;
+	public long minDelay = 20;
 	public long timeSinceLastChange=300;
 	public long previousLastChange=0;
-	public long painThresold=200;
+	
 	public boolean dolor=false;
+	
+	private static final String TAG = "GregBug";
 	
 	/**
 	 * PajaMetrics
@@ -67,14 +70,18 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal=100;
+	public float progressGoal;
+	public long painThresold;
+	public int decay_speed;
+	public int painPenalty;
 	public int freqCoeff=1;
 	public float avFreq=1;
-	public float factorMult=4;
+	public float factorMult;
 	public int backHeight;
 	public int rectHeight=100;
 	public float statusProgress=0;
-	public int level=0;
+	public int level=1;
+	public int exlevel=1;
 	
 	/**
 	Rectangle and drawing
@@ -97,6 +104,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	SoundPool soundPool;
 	Integer soundId;
+	Integer soundId2;
 	AudioManager mgr;
 	float volume;
 	
@@ -190,8 +198,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 		if(!PAJA_STARTED){
 			startTime=System.currentTimeMillis();
 			PAJA_STARTED=true;
+			//initialize level
+			level=1;
+			changeLevel(0);
 		}
 		else{
+			
+			
 		// check last sensor update action
 		delay=System.currentTimeMillis()-lastSensorUpdate;
 		
@@ -213,12 +226,57 @@ public class MainActivity extends Activity implements SensorEventListener {
 		
 			if(delay>minDelay){
 				
-				//if Paja is not completed
-				if(progress<progressGoal){	
-					
-				updateProgress(-1);
+				
 				//back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
 				back.setBackgroundColor(Color.rgb(0, 0, 0));
+				
+			//if Paja is not completed
+			if(progress<progressGoal){	
+				
+				//Pain alarm if freq is too high
+				if(delay<painThresold){		
+					
+					if (delay!=previousLastChange){
+				
+						Log.i(TAG,"PAIN --- Delay: "+String.valueOf(delay)+"   Threshold: "+String.valueOf(painThresold));
+						
+						if(redFadeOut>0){
+							back.setBackgroundColor(Color.rgb((25*redFadeOut), 0, 0));
+					    	redFadeOut--;
+					    	
+					    	//Progress penalty for Pain activation
+					    	soundPool.play(soundId2,volume,volume,1,0,1.3f);
+					    	progress=Math.max(0,progress-painPenalty);
+					    	statusProgress=progress/progressGoal;
+					    	
+					    	
+					    	if(dolor!=true){
+					    		v.vibrate(100);
+					    	}
+					    	dolor=false;
+					    	//cmessage.setText(getString(R.string.pain));						
+					    	
+					    	//jumpLevel=false;
+						}else{
+							redFadeOut=10;
+							back.setBackgroundColor(Color.rgb(0, 0, 0));
+							dolor=false;
+							cmessage.setText("");
+							//cmessage.setVisibility(View.INVISIBLE);
+							previousLastChange=delay;
+						}
+					}
+				}
+					//continuous decay	
+					progress=Math.max(progress-decay_speed, 0);
+					statusProgress=progress/progressGoal;
+					
+					//decay down to 0 => level down
+					if(progress==0 && level>1){
+						changeLevel(-1);
+						cmessage.setText(cMessageTemp);
+						cmessage.setVisibility(View.VISIBLE);
+					}
 				
 				////nextLevel FadeOut animation           
 				if(jumpLevel==true){
@@ -232,48 +290,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 						back.setBackgroundColor(Color.rgb(0, 0, 0));
 						
 						//Next level vibration feedback
-				    	v.vibrate(1000);
+				    	//v.vibrate(1000);
 				    	
 						jumpLevel=false;
 						//cmessage.setVisibility(View.INVISIBLE);
 					}  	 	
 				}
 				
-				//Pain alarm if freq is too high
-				
-				if(timeSinceLastChange<painThresold || dolor==true){		
-				
-					if (timeSinceLastChange!=previousLastChange){
-				
-						if(redFadeOut>0){
-							back.setBackgroundColor(Color.rgb((25*redFadeOut), 0, 0));
-					    	redFadeOut--;
-					    	
-					    	//Progress penalty for Pain activation
-					    	progress=Math.max(0,progress-10);
-					    	
-					    	// Vibrate according to pattern (-1 means don't repeat)
-					    	if(dolor!=true){
-					    		v.vibrate(100);
-					    	}
-					    	dolor=true;
-					    	cmessage.setText("DOLOR!!!!");						
-					    	
-					    	//jumpLevel=false;
-						}else{
-							redFadeOut=10;
-							back.setBackgroundColor(Color.rgb(0, 0, 0));
-							dolor=false;
-							cmessage.setText("");
-							//cmessage.setVisibility(View.INVISIBLE);
-							previousLastChange=timeSinceLastChange;
-						}
-					}
-				
-				}
-				
 				//paint rectangle
 				rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
+				
+				if(progress>0){
+			    	playSound(volume,Math.min(2f, 0.5f+1.6f*(progress)/1000));
+			    	}
 				
 				//Update layout height
 				float tempRectHeight=statusProgress*backHeight;
@@ -294,48 +323,40 @@ public class MainActivity extends Activity implements SensorEventListener {
 					}
 				
 				else if(event.values[1]>sensorSensitivity){ //hand down
-					
-					
 					if(!IS_DOWN){
+
 						//hand.scrollTo(0, -150);
 						golpes++;
-						timeSinceLastChange=System.currentTimeMillis()-lastChange;
+						delay=System.currentTimeMillis()-lastChange;
 						
-						frequency=1000/(timeSinceLastChange);//should avoid dividing by 0
+						frequency=1000/(Math.max(1,delay));//should avoid dividing by 0
 						//progress=updateProgress(1); 
 						
 						dist.setText(Integer.toString(Math.round(progress)));
 						IS_DOWN=true;
 						lastSensorUpdate=System.currentTimeMillis();
-						
-						//rythm. Still being used to compute the QualityScore
 										
-						if(golpes>3){ //VERY FAST
-							//		fast.setVisibility(View.INVISIBLE);
-							//		slow.setVisibility(View.INVISIBLE);
-									//back.setBackgroundColor(getResources().getColor(R.color.bigRed));
-									updateProgress(1);
-									
+						if(golpes>3){
+							updateProgress(1);				
 						}
 						
 						//else {back.setBackgroundColor(getResources().getColor(R.color.bigWhite));}
-						
 						//RGB background update
 						
 						rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
 						lastChange=System.currentTimeMillis();
-						playSound(volume,0.4f+getProgress()/200);
 
+						
+				
 						} 	
 				} //end of hand down				
 				
 			}
 				else{
 					//endPaja(); //Paja is ended, score computed etc.					
-					newLevel(1);
+					changeLevel(1);
 					cmessage.setText(cMessageTemp);
 					cmessage.setVisibility(View.VISIBLE);
-					progress=0;
 					jumpLevel=true;
 					
 				} 
@@ -356,14 +377,17 @@ public class MainActivity extends Activity implements SensorEventListener {
     	}else if(progress>0 && i<0){
     		progress=Math.max(0, progress+i);
     	}else{
-        	if(timeSinceLastChange!=0){
-        		vprogress=(1000/timeSinceLastChange)*factorMult;
+        	if(delay!=0){
+        		vprogress=(1000/delay)*factorMult;
             	progress=Math.max(0,progress+vprogress);
             	//progress=progress+20;       	
         	}    			
     	}
     	
     	statusProgress=progress/progressGoal;
+    	//if(progress%3==1 || true){
+    	
+    	//}
     	return progress;
     	
     	/*
@@ -397,25 +421,70 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     */
     
-    public void newLevel(int l){
-    	level=level+l;
-    	if(level==1){
-    		g=1;
+    public void changeLevel(int l){
+    	
+    	if(l<0){
+    		Toast.makeText(this, "level down", Toast.LENGTH_SHORT).show();
+    		}
+    	exlevel=level;
+    	level=Math.max(1,level+l);
+
+    	switch (level) {
+		case 1:
+			g=1;
+    		progressGoal=100;
+    		factorMult=1.5f;
+    		painThresold=60;
+    		painPenalty=5;
+    		decay_speed=1;
+    		cMessageTemp="Level 1";
+			break;
+		case 2:
+			g=1;
     		progressGoal=300;
     		factorMult=3;
-    		painThresold=150;
-
-    		cMessageTemp="GOOD JOB!!";
-    	}else if(level==2){
-    		b=1;
+    		painThresold=57;
+    		painPenalty=25;
+    		decay_speed=2;
+    		cMessageTemp="Level 2";
+    		break;
+		case 3:
+			b=1;
     		progressGoal=400;
-    		painThresold=100;
-    		factorMult=2;
-    		cMessageTemp="HARDER FASTER!!!";
-    	}else{
-    		endPaja();
+    		painThresold=56;
+    		painPenalty=40;
+    		factorMult=3;
+    		decay_speed=3;
+    		cMessageTemp="Level 3";
+    		break;
+		case 4:
+			r=1;
+    		progressGoal=600;
+    		painThresold=55;
+    		painPenalty=60;
+    		factorMult=4;
+    		decay_speed=4;
+    		cMessageTemp="Level 4";
+    		break;
+		case 5:
+			r=1;
+    		progressGoal=1000;
+    		painThresold=52;
+    		painPenalty=100;
+    		factorMult=5;
+    		decay_speed=5;
+    		cMessageTemp="Level 5";
+    		break;
+		default: endPaja();
+			break;
     	}
     	
+    	if(exlevel>1 && l<0){
+    		progress=progressGoal*0.7f;
+    	}
+    	else{
+    	progress=progressGoal*0.2f;
+    	}
     }
 
 	
@@ -449,7 +518,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     	//quickToast(Float.toString(freqCoeff));
     	
     	if (freqCoeff<0){
-    		progress=Math.max(0, progress+freqCoeff*timeSinceLastChange*1/300);
+    		progress=Math.max(0, progress+freqCoeff*delay*1/300);
     	}
     	
     	else 
@@ -466,23 +535,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 		float coeff_VeryFast=1;
 		float coeff_Duration=3;
 		return Math.round(
-				countSlow*coeff_Slow*
-				countFast*coeff_Fast*
-				countVeryFast*coeff_VeryFast*
-				duration*coeff_Duration
+				duration*golpes
 				/100);
 	}
     
 
     public void endPaja(){
 		
-		mSensorManager.unregisterListener(this);
+		soundPool.release();
+    	mSensorManager.unregisterListener(this);
 		duration=(System.currentTimeMillis()-startTime)/1000;
     	Intent i = new Intent(getApplicationContext(),PajaCompleted.class);
 		i.putExtra("score", String.valueOf(getScore()));
 		i.putExtra("duration", String.valueOf(duration));
-
-
 		i.putExtra("golpes", String.valueOf(golpes));
 
 		startActivity(i);
@@ -581,28 +646,28 @@ public void anim(View view){
 }
 public void loadSound(){
 	soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-	soundId = soundPool.load(getApplicationContext(), R.raw.a_200ms, 1);
+	soundId = soundPool.load(getApplicationContext(), R.raw.shake, 1);
 	mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 	soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener()
 	 {
 	     @Override
 	     public void onLoadComplete(SoundPool arg0, int arg1, int arg2)
 	     {
-	         quickToast("loaded");
+	         Log.i(TAG, "Sound Loaded");
 	         //launch sound
-	         
-	         //playSound(volume,0.6f);
+	         //playSound(volume,1f);
 	     }
 	 });
 	
+	soundId2 = soundPool.load(getApplicationContext(), R.raw.ouch2, 1);
+	
 	}
 public void playSound(float volume,float speed){
-	//soundPool.pause(soundId);
-	soundPool.play(soundId, volume, volume, 1, -1, speed);
-	soundPool.setLoop(soundId, -1);
-	 
+	soundPool.stop(soundId);
+	soundPool.play(soundId, volume, volume, 0, 1, speed);
+	//soundPool.setLoop(soundId, -1);
 	//soundPool.setRate(soundId, speed);
-}
+} 
 
 public void updateSound(float speed){
 	soundPool.setRate(soundId, speed);

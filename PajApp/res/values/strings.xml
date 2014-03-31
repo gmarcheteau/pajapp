@@ -20,6 +20,7 @@
     <string name="title_badge_detail">Badge Detail</string>
     <string name="title_activity_badge_slide">BadgeSlideActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="messageGPlus">Hello there! I\'m sharing this fapp with you, I hope you\'ll like it.</string>
 
     <!-- Titles -->
     <string name="title_crossfade">Simple Crossfade</string>
@@ -44,7 +45,13 @@
     <string name="message_empty_layout_changes">Add an item above to get started.</string>
     <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
     <string name="inPajaMessage1">Fapp Away!</string>
+    <string name="progress_dialog_text">Working on it</string>
+    <string name="gplus_connect">Signing in to share your fapp...</string>
 
+    <!-- Fapp Messages -->
+    <string name="pain">PAIN!!!</string>
+    
+    
     <!-- Accessibility-only descriptions -->
     <string name="description_image_1">Image 1</string>
     <string name="description_image_2">Image 2</string>
@@ -65,5 +72,9 @@
     <string name="badge4_name">Badge Score</string>
     <string name="badge4_desc">Desciption badge score</string>
     <string name="title_activity_credits">Credits</string>
+    <string name="title_activity_fbshare">FBShare</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_fbshare2">FBShare2</string>
 
 </resources>

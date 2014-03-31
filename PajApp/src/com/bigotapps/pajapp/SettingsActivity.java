@@ -1,6 +1,10 @@
 package com.bigotapps.pajapp;
 
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,13 +19,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusClient.OnAccessRevokedListener;
 
@@ -38,13 +52,22 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
   
+    private UiLifecycleHelper uiHelper;
+    private StatusCallback callback;
+    private GraphUser fbuser;
+    private ImageButton fbButton;
+    
+    private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+    private boolean pendingPublishReauthorization = false;
+    
+    
 	Long topScore;
 	
 	 //shared preferences, to store Best Scores and stuff
 	SharedPreferences prefs;
 	boolean FB_CONNECT = false;
 	boolean GP_CONNECT = false;
-	public String fbusername="fbUserName";
+	public String fbusername="default name";
 	   
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +75,48 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
         
         setContentView(R.layout.settings);
         
+        fbButton=(ImageButton) findViewById(R.id.fbButton);
         findViewById(R.id.GooglePlusSigninButton).setOnClickListener(this);
         
-        mPlusClient =
-        	    new PlusClient.Builder(this, this, this).setActions(
-        	        "http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
-        	        .setScopes("PLUS_LOGIN") // Space separated list of scopes
-        	        .build();
+        uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstanceState);
+        
+     // start Facebook Login
+        Session.openActiveSession(this, true, new Session.StatusCallback() {
+
+          // callback when session changes state
+          @Override
+          public void call(Session session, SessionState state, Exception exception) {
+        	
+        	 SessionState currentstate =  session.getState();
+        	 //Toast.makeText(getApplicationContext(), currentstate.toString(), Toast.LENGTH_SHORT).show();
+        	  
+        	if (session.isOpened()) {
+            	// make request to the /me API
+            	Request.newMeRequest(session, new Request.GraphUserCallback() {
+
+            		  // callback after Graph API response with user object
+            		  @Override
+            		  public void onCompleted(GraphUser user, Response response) {
+            		    if (user != null) {
+            		      fbuser=user;
+            		      fbusername=user.getName();
+            		      TextView name = (TextView) findViewById(R.id.textViewFBname);
+                          name.setText(fbusername);
+            		      Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
+            		    }
+            		  }
+            		}).executeAsync();
+            }
+          }
+        });
+        
+        
+        
+        
+        mPlusClient = new PlusClient.Builder(this, this, this)
+            .setScopes(Scopes.PLUS_LOGIN)
+            .build();
         
      // Progress bar to be displayed if the connection failure is not resolved.
         mConnectionProgressDialog = new ProgressDialog(this);
@@ -84,13 +142,14 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
                 	Toast.makeText(getApplicationContext(), "G+ unchecked", Toast.LENGTH_SHORT).show();
                 	gPlusDisconnect();
                 	prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", false).commit();
-                	TextView gpn = (TextView) findViewById(R.id.textViewFBname);
+                	TextView gpn = (TextView) findViewById(R.id.textViewGPlusname);
                     gpn.setText("G+: disconnected");
                 	
                 }
             }
         });
         
+        /*
         Switch switchFB = (Switch) findViewById(R.id.SwitchFB);
         switchFB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -109,14 +168,15 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
                 }
             }
         });
-        
+        */
         if (GP_CONNECT){
         	switchGPlus.setChecked(true);
         }
+        /*
         if (FB_CONNECT){
             switchFB.setChecked(true);
             }
-        
+        */
         
     }
 
@@ -159,23 +219,65 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
+        uiHelper.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
     }
 
     
-
     @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
             mConnectionResult = null;
             mPlusClient.connect();
         }
+       
+       
+        Session.getActiveSession().onActivityResult(this, requestCode, responseCode, data);
+        
+        uiHelper.onActivityResult(requestCode, responseCode, data, new FacebookDialog.Callback() {
+            @Override
+            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+                Log.e("Activity", String.format("Error: %s", error.toString()));
+            }
+
+            @Override
+            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+                Log.i("Activity", "Success!");
+            }
+        });
     }
+    
+    /*
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession()
+            .onActivityResult(this, requestCode, resultCode, data);
+    }
+    */
 
     //@Override
     public void onConnected(Bundle b) {
         String accountName = mPlusClient.getAccountName();
-        TextView gpn = (TextView) findViewById(R.id.textViewFBname);
+        TextView gpn = (TextView) findViewById(R.id.textViewGPlusname);
         gpn.setText("G+: "+accountName);
         mConnectionProgressDialog.dismiss();
         //Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_SHORT).show();
@@ -211,7 +313,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
 			//save preferences
 	        prefs.edit().putBoolean("com.bigotapps.pajapp.gPlusConnect", true).commit();
 	        break;
-		case R.id.FBSignIn:
+		case R.id.fbButton:
 			fbConnect();
 			break;
 		default:
@@ -231,39 +333,34 @@ public class SettingsActivity extends Activity implements View.OnClickListener,
     
     }
 
+    
 public void fbConnect(){
-	 Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
+	//Toast.makeText(getApplicationContext(), "launching fbConnect", Toast.LENGTH_SHORT).show();
 	// start Facebook Login
-	
-/*	 
-	 Session.openActiveSession(this, true, new Session.StatusCallback() {
+	//Toast.makeText(getApplicationContext(), fbusername, Toast.LENGTH_SHORT).show();
+	Session session = Session.getActiveSession();
 
-      // callback when session changes state
-      @Override
-      public void call(Session session, SessionState state, Exception exception) {
-    	  if (session.isOpened()) {
-        
-        // make request to the /me API
-          Request.newMeRequest(session, new Request.GraphUserCallback() {
+    if (session != null) {
 
-	  // callback after Graph API response with user object
-	  @Override
-	  public void onCompleted(GraphUser user, Response response) {
-	    if (user != null) {
-	    	Toast.makeText(getApplicationContext(), "user not null", Toast.LENGTH_SHORT).show();
-	    	TextView fbname = (TextView) findViewById(R.id.textViewFBname);
-		    fbname.setText("Hello " + user.getName() + "!");
-		    fbusername=user.getName();
-	    }
-	  }
-	}).executeAsync();
-          
+        // Check for publish permissions
+        List<String> permissions = session.getPermissions();
+        if (!isSubsetOf(PERMISSIONS, permissions)) {
+            pendingPublishReauthorization = true;
+            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
+                    this, PERMISSIONS);
+            session.requestNewPublishPermissions(newPermissionsRequest);
+            return;
         }
-        TextView fbname = (TextView) findViewById(R.id.textViewFBname);
-	        fbname.setText("FB session not opened");
-      }
-    });
-*/	
+    }
+	
+    FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
+    .setLink("http://www.lemonde.fr")
+    .setApplicationName("Fapp Beta")
+    .build();
+
+	
+    uiHelper.trackPendingDialogCall(shareDialog.present());
+		
 }
 
 public void gPlusConnect(){
@@ -304,6 +401,14 @@ public void gPlusDisconnect(){
     }
 }
 
+private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    if (state.isOpened()) {
+        fbButton.setVisibility(View.VISIBLE);
+    } else if (state.isClosed()) {
+        fbButton.setVisibility(View.INVISIBLE);
+    }
+}
+
 private boolean isNetworkConnected() {
 	  ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	  NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -313,5 +418,16 @@ private boolean isNetworkConnected() {
 	  } else
 	   return true;
 	}
+private boolean isSubsetOf(Collection<String> subset,
+        Collection<String> superset) {
+    for (String string : subset) {
+        if (!superset.contains(string)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 }
