@@ -9,31 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="@color/Black"
         android:onClick="onClick"
-        android:src="@android:drawable/ic_media_ff" />
-
-    <ImageButton
-        android:id="@+id/buttonLevel3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonLevel2"
-        android:layout_below="@+id/buttonLevel2"
-        android:layout_marginTop="20dp"
-        android:background="@color/LightGrey"
-        android:enabled="false"
-        android:onClick="onClick"
-        android:src="@drawable/ic_launcher" />
-
-    <ImageButton
-        android:id="@+id/buttonLevel1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:background="@color/red"
-        android:onClick="onClick"
-        android:src="@drawable/ic_launcher" />
+        android:src="@android:drawable/ic_media_rew" />
 
     <ImageButton
         android:id="@+id/buttonLevel2"
@@ -41,11 +19,29 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/buttonLevel1"
         android:layout_below="@+id/buttonLevel1"
-        android:layout_marginTop="20dp"
-        android:background="@color/LightGrey"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
         android:enabled="false"
+        android:maxHeight="90dp"
+        android:maxWidth="90dp"
         android:onClick="onClick"
-        android:src="@drawable/ic_launcher" />
+        android:scaleType="fitXY"
+        android:src="@drawable/button_level_2" />
+
+    <ImageButton
+        android:id="@+id/buttonLevel3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonLevel2"
+        android:layout_below="@+id/buttonLevel2"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:enabled="false"
+        android:maxHeight="90dp"
+        android:maxWidth="90dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_level_3" />
 
     <ImageButton
         android:id="@+id/buttonLevel4"
@@ -53,10 +49,43 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/buttonLevel3"
         android:layout_below="@+id/buttonLevel3"
-        android:layout_marginTop="20dp"
-        android:background="@color/LightGrey"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
         android:enabled="false"
+        android:maxHeight="90dp"
+        android:maxWidth="90dp"
         android:onClick="onClick"
-        android:src="@drawable/ic_launcher" />
+        android:scaleType="fitXY"
+        android:src="@drawable/button_level_4" />
+    
+    <ImageButton
+        android:id="@+id/buttonLevel5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonLevel4"
+        android:layout_below="@+id/buttonLevel4"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:enabled="false"
+        android:maxHeight="90dp"
+        android:maxWidth="90dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_level_5" />
+
+    <ImageButton
+        android:id="@+id/buttonLevel1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="90dp"
+        android:maxWidth="90dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_level_1" />
 
 </RelativeLayout>

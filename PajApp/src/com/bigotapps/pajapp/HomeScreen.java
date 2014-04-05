@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -26,8 +25,10 @@ public class HomeScreen extends FragmentActivity {
 	private LeftDrawerFragment LeftDrawerFragment;
 	
 	public ImageButton buttonLevel1,buttonLevel2,buttonLevel3,buttonLevel4;	
-	private int userLevel=1;
 	
+	//default level 3 but should be taken from user prefs file
+	private int userLevel=3;
+		
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class HomeScreen extends FragmentActivity {
 			public void onDrawerClosed(View arg0) {
 				// TODO Auto-generated method stub
 				Log.i("GregBug","Drawer Closed");
+				adjustContentPosition(true);//TRUE: parameter means that content frame should be re-centered
 			}
 
 			@Override
@@ -90,12 +92,16 @@ public class HomeScreen extends FragmentActivity {
 			public void onDrawerSlide(View arg0, float arg1) {
 				// TODO Auto-generated method stub
 				//Log.i("GregBug","Drawer Slide: "+String.valueOf(arg1));
+				
+				//sliding the content view: need to do it right, otherwise slows down everything? 
+				adjustContentPosition(false);
+				
 			}
 
 			@Override
 			public void onDrawerStateChanged(int arg0) {
 				// TODO Auto-generated method stub
-				Log.i("GregBug","Drawer State Changed");
+				//Log.i("GregBug","Drawer State Changed");
 			}
         }); //end of DrawerListener
         
@@ -110,20 +116,17 @@ public class HomeScreen extends FragmentActivity {
         
 }
 
-
+	@Override
+    public void onResume() {
+        super.onResume();
+        mDrawerLayout.closeDrawers();
+	}
 	public void onClick(View view){
 		 switch(view.getId()){
-			case R.id.arcadeButton:
-				mp.release();
-				startPaja();
-				break;
 			case R.id.settingsButton:
-				mp.release();
 				mDrawerLayout.openDrawer(Gravity.RIGHT);
 				break;	
 			case R.id.shareButtonCredits:
-				mp.release();
-				//share();
 				mDrawerLayout.openDrawer(Gravity.LEFT);
 				break;
 			case R.id.buttonCloseLeft:
@@ -132,21 +135,37 @@ public class HomeScreen extends FragmentActivity {
 			case R.id.buttonCloseRight:
 				mDrawerLayout.closeDrawer(Gravity.RIGHT);
 				break;
+			case R.id.buttonFakeFapp:
+				fakePaja();
+				break;
+			case R.id.fappButtonCredits:
+				startPaja(1);
+				break;
 			case R.id.buttonLevel1:
-				mp.release();
-				startPaja();
+				startPaja(1);
 				break;
 			case R.id.buttonLevel2:
-				mp.release();
-				startPaja();
+				startPaja(2);
+				break;
+			case R.id.buttonLevel3:
+				startPaja(3);
+				break;
+			case R.id.buttonLevel4:
+				startPaja(4);
+				break;
+			case R.id.buttonLevel5:
+				startPaja(5);
 				break;
 	 }
 }
 	
 	
-	 public void startPaja(){
-		//Toast.makeText(this, "START PAJA", Toast.LENGTH_SHORT).show();
+	 public void startPaja(int difficulty){
+		mp.release();
+		 //Toast.makeText(this, "START PAJA", Toast.LENGTH_SHORT).show();
 		Intent i = new Intent(this,com.bigotapps.pajapp.MainActivity.class);
+		i.putExtra("difficulty", difficulty);
+		Log.i("GregBug","extra in Intent: difficulty "+String.valueOf(difficulty));
 		startActivity(i);
 		    }
 	
@@ -173,6 +192,37 @@ public class HomeScreen extends FragmentActivity {
 		//no se pueden modificar los botones desde aqu’?
 		//que est‡n en el fragment
 	}
-	 
+	
+	private void adjustContentPosition(boolean allClosed) {
+        //MISSING: when a drawer is opened and trying to directly open the other: content view is centered
+		
+		Integer slide=0;
+        View content =findViewById(R.id.content_frame);
+      
+       if(allClosed){//a drawer is opened and user clicks on content frame => need to reset position
+    	   content.setX(0);
+       }
+       
+       else{ // a drawer is sliding
+    	  if(mDrawerLayout.isDrawerVisible(Gravity.LEFT)){// left drawer is sliding
+			
+    		float leftX= findViewById(R.id.left_drawer).getRight();
+			float contentX = findViewById(R.id.content_frame).getLeft();
+			slide = Math.round(leftX-contentX);
+			content.offsetLeftAndRight(slide);
+			
+		}
+		
+		else if (mDrawerLayout.isDrawerVisible(Gravity.RIGHT)){//right drawer is sliding
+			float rightX = findViewById(R.id.right_drawer).getLeft();
+			float contentX = findViewById(R.id.content_frame).getRight();
+			slide = Math.round(rightX-contentX);
+			content.offsetLeftAndRight(slide);
+		}
+		//Log.i("GregBug","calling adjust position"+String.valueOf(slide));
+       }
+	
+    }
+	
 }
 	

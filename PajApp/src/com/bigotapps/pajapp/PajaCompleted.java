@@ -126,7 +126,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
 			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
 			//show score
-			TextView scoreView = (TextView) findViewById(R.id.textViewScore);
+			TextView scoreView = (TextView) findViewById(R.id.textViewCurrentScore);
 			scoreView.setText(score+" pts");
 			Log.i(TAG,"Paja score: "+ score +"\n Duration: " + duration + "s");
 		}

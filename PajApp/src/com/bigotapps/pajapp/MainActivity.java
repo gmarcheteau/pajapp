@@ -19,6 +19,7 @@ import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -42,18 +44,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 	 */
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	public int sensorSensitivity=2;
+	public int sensorSensitivity=10;
 	/**
 	 * Minimum delay between sensor readings
 	 * To avoid conflicts 
 	 */
 	public long lastSensorUpdate = 1;
-	public long delay=1000;
-	public float frequency=1;
-	public float frequency_previous=1;
+	public long lastGolpe = 0;
+	public long delay_golpe=1000;
+	public long delay_sensor=1000;
 	public long minDelay = 20;
 	public long timeSinceLastChange=300;
 	public long previousLastChange=0;
+	public long IDLENESS = 60;
 	
 	public boolean dolor=false;
 	
@@ -70,18 +73,31 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public int countFast=1;
 	public int countVeryFast=1;
 	public float progress=0;
-	public float progressGoal;
+	public int progressGoal;
 	public long painThresold;
 	public int decay_speed;
-	public int painPenalty;
+	public int progressPainPenalty;
+	public int scorePainPenalty;
+	public int scoreLevelDownPenalty;
+	public int scoreGolpe;
 	public int freqCoeff=1;
 	public float avFreq=1;
-	public float factorMult;
+	public float factorMult=2;
 	public int backHeight;
 	public int rectHeight=100;
 	public float statusProgress=0;
+	
+	
 	public int level=1;
 	public int exlevel=1;
+	public int maxLevel=1;
+	public int difficulty=1;
+	
+	public fappLevel[] fappLevels;
+	public int[][] levelParams;
+	
+	public int score=0;
+	public int[] lastSavedScore={0,0,0,0};
 	
 	/**
 	Rectangle and drawing
@@ -91,6 +107,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean jumpLevel=true;
 	int r,g,b=0;
 	public String cMessageTemp="";
+	public View rect;
+	public View back;
+	public ImageView movingHand;
+	public TextView scoreText, cmessage,levelText;
+	Vibrator v;
 	
 	/**TIMING 
 	 */
@@ -124,13 +145,45 @@ public class MainActivity extends Activity implements SensorEventListener {
 		loadSound();
 		volume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 	
-		if(this.getIntent().getExtras() != null){
+		if(this.getIntent().getExtras().getString("message") != null){
 			//when user is coming from deep-linking
 			String message=this.getIntent().getExtras().getString("message");
 			quickToast(message);
+			}
+		
+		//if levels are unlocked
+		if(this.getIntent().getExtras().getInt("difficulty") >0){
+			difficulty=this.getIntent().getExtras().getInt("difficulty");
+			Log.i("GregBug","Difficulty: "+String.valueOf(maxLevel));
+			setLevelParameters(difficulty);
 		}
+		else{
+			setLevelParameters(1);
+			Log.i("GregBug","Setting difficulty to 0 as no difficulty found");
+		}
+		
 		//initialize pref file if new
 		initUser();
+		
+		//graphic element handlers
+  		back= (View) findViewById(R.id.back);
+  		rect= findViewById(R.id.rectLayout);
+  		movingHand = (ImageView) findViewById(R.id.movingHand);
+  		scoreText = (TextView) findViewById(R.id.textViewCurrentScore);
+  		levelText = (TextView) findViewById(R.id.levelView);
+  		cmessage = (TextView) findViewById(R.id.centerMessage);
+  		// Get instance of Vibrator from current Context
+  		v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+  		
+  		new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadeOut(movingHand);
+                movingHand.setVisibility(View.INVISIBLE);
+            }
+        }, 3000);
+  		
+            		
 		
 	}
 
@@ -203,164 +256,129 @@ public class MainActivity extends Activity implements SensorEventListener {
 			changeLevel(0);
 		}
 		else{
-			
-			
 		// check last sensor update action
-		delay=System.currentTimeMillis()-lastSensorUpdate;
-		
-		//graphic element handlers
-		View back= findViewById(R.id.relLayout);
-		View rect= findViewById(R.id.rectLayout);
-		//View hand = findViewById(R.id.imageView1);
-		TextView dist = (TextView) findViewById(R.id.textViewProgress);
-		TextView slow = (TextView) findViewById(R.id.TextViewSlow);
-		TextView fast = (TextView) findViewById(R.id.TextViewFast);
-		TextView cmessage = (TextView) findViewById(R.id.centerMessage);
-		// Get instance of Vibrator from current Context
-		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		
-		//cmessage.setVisibility(View.VISIBLE);
-		//cmessage.postDelayed
+		delay_golpe=System.currentTimeMillis()-lastGolpe;
+		delay_sensor= System.currentTimeMillis()-lastSensorUpdate;
 		
 		backHeight=back.getHeight();
 		
-			if(delay>minDelay){
-				
-				
-				//back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
-				back.setBackgroundColor(Color.rgb(0, 0, 0));
-				
-			//if Paja is not completed
-			if(progress<progressGoal){	
-				
-				//Pain alarm if freq is too high
-				if(delay<painThresold){		
-					
-					if (delay!=previousLastChange){
-				
-						Log.i(TAG,"PAIN --- Delay: "+String.valueOf(delay)+"   Threshold: "+String.valueOf(painThresold));
-						
-						if(redFadeOut>0){
-							back.setBackgroundColor(Color.rgb((25*redFadeOut), 0, 0));
-					    	redFadeOut--;
-					    	
-					    	//Progress penalty for Pain activation
-					    	soundPool.play(soundId2,volume,volume,1,0,1.3f);
-					    	progress=Math.max(0,progress-painPenalty);
-					    	statusProgress=progress/progressGoal;
-					    	
-					    	
-					    	if(dolor!=true){
-					    		v.vibrate(100);
-					    	}
-					    	dolor=false;
-					    	//cmessage.setText(getString(R.string.pain));						
-					    	
-					    	//jumpLevel=false;
-						}else{
-							redFadeOut=10;
-							back.setBackgroundColor(Color.rgb(0, 0, 0));
-							dolor=false;
-							cmessage.setText("");
-							//cmessage.setVisibility(View.INVISIBLE);
-							previousLastChange=delay;
-						}
-					}
-				}
-					//continuous decay	
+			if(delay_sensor>minDelay){
+					//back.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), 0, 0));
+					back.setBackgroundColor(Color.rgb(0, 0, 0));
+				if(delay_golpe>IDLENESS){//continuous decay	
 					progress=Math.max(progress-decay_speed, 0);
 					statusProgress=progress/progressGoal;
+					score=Math.max(0, score-decay_speed);
+					//Log.i("level","score penalty for idleness");
+					}
 					
-					//decay down to 0 => level down
+				//if level is not completed
+				if(progress<progressGoal){	
+					if(delay_golpe<painThresold&&!IS_DOWN){	//Pain if freq is too high		
+						if (delay_golpe!=previousLastChange){
+					
+							Log.w("golpe","PAIN --- Delay: "+String.valueOf(delay_golpe)+"   Threshold: "+String.valueOf(painThresold));
+						 	//Progress penalty for Pain activation
+					    	soundPool.play(soundId2,volume,volume,1,0,1.3f);
+					    	progress=Math.max(0,progress-progressPainPenalty);
+					    	statusProgress=progress/progressGoal;
+					    	
+					    	//Score penalty
+					    	score=Math.max(0,score-scorePainPenalty);
+					    	Log.w("golpe","Score penalty: "+String.valueOf(scorePainPenalty)+"     New score: "+String.valueOf(score));
+							
+							if(redFadeOut>0){
+								back.setBackgroundColor(Color.rgb((25*redFadeOut), 0, 0));
+						    	redFadeOut--;
+						   	
+						    	if(dolor!=true){
+						    		v.vibrate(100);
+						    	}
+						    	dolor=false;
+								}
+							
+							else{
+								redFadeOut=10;
+								back.setBackgroundColor(Color.rgb(0, 0, 0));
+								dolor=false;
+								cmessage.setText("");
+								previousLastChange=delay_golpe;
+								}
+						}
+					}
+							
+					//decay or pain brings progress down to 0 => level down
 					if(progress==0 && level>1){
 						changeLevel(-1);
+						score=Math.max(0, score-scoreLevelDownPenalty);
 						cmessage.setText(cMessageTemp);
 						cmessage.setVisibility(View.VISIBLE);
 					}
-				
-				////nextLevel FadeOut animation           
-				if(jumpLevel==true){
 					
-					if(backFadeOut>0){
-						back.setBackgroundColor(Color.rgb((25*backFadeOut), (25*backFadeOut), (25*backFadeOut)));
-				    	backFadeOut--;
-				    	
-					}else{
-						backFadeOut=10;
-						back.setBackgroundColor(Color.rgb(0, 0, 0));
+					////nextLevel FadeOut animation           
+					if(jumpLevel==true){
 						
-						//Next level vibration feedback
-				    	//v.vibrate(1000);
-				    	
-						jumpLevel=false;
-						//cmessage.setVisibility(View.INVISIBLE);
-					}  	 	
-				}
-				
-				//paint rectangle
-				rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
-				
-				if(progress>0){
-			    	playSound(volume,Math.min(2f, 0.5f+1.6f*(progress)/1000));
-			    	}
-				
-				//Update layout height
-				float tempRectHeight=statusProgress*backHeight;
-				rectHeight=(int)tempRectHeight;
-				rect.setMinimumHeight(rectHeight);
-				
-				dist.setText(Integer.toString(Math.round(progress)));
-				//dist.setText(Integer.toString((int)));
-				
-				if(event.values[1]<0){//hand up
-					if(IS_DOWN){
-						//hand.scrollTo(0, 150);
-						lastSensorUpdate=System.currentTimeMillis();
-						IS_DOWN=false;
-						//progress=progress-0.01;
-						//back.setBackgroundColor(Color.rgb(100, 100, 100));
-						}
+						if(backFadeOut>0){
+							back.setBackgroundColor(Color.rgb((25*backFadeOut), (25*backFadeOut), (25*backFadeOut)));
+					    	backFadeOut--;
+					    	
+						}else{
+							backFadeOut=10;
+							back.setBackgroundColor(Color.rgb(0, 0, 0));
+							
+							//Next level vibration feedback
+					    	//v.vibrate(1000);
+					    	
+							jumpLevel=false;
+							//cmessage.setVisibility(View.INVISIBLE);
+						}  	 	
 					}
+					
+					//paint rectangle
+					rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
+					
+					if(progress>0){
+				    	playSound(volume,Math.min(2f, 0.5f+1.6f*(progress)/1000));
+				    	}
+					
+					//Update progress meter height
+					float tempRectHeight=statusProgress*backHeight;
+					rectHeight=(int)tempRectHeight;
+					rect.setMinimumHeight(rectHeight);
 				
-				else if(event.values[1]>sensorSensitivity){ //hand down
-					if(!IS_DOWN){
-
-						//hand.scrollTo(0, -150);
-						golpes++;
-						delay=System.currentTimeMillis()-lastChange;
-						
-						frequency=1000/(Math.max(1,delay));//should avoid dividing by 0
-						//progress=updateProgress(1); 
-						
-						dist.setText(Integer.toString(Math.round(progress)));
-						IS_DOWN=true;
-						lastSensorUpdate=System.currentTimeMillis();
-										
-						if(golpes>3){
-							updateProgress(1);				
+					if(event.values[1]<0&&IS_DOWN){//hand up
+							//hand.scrollTo(0, 150);
+							//lastSensorUpdate=System.currentTimeMillis();
+							Log.e("golpe","Antigolpe");
+							IS_DOWN=false;
 						}
-						
-						//else {back.setBackgroundColor(getResources().getColor(R.color.bigWhite));}
-						//RGB background update
-						
-						rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
-						lastChange=System.currentTimeMillis();
-
-						
+					
+					else if(event.values[1]>sensorSensitivity&&!IS_DOWN){ //hand down
+							golpes++;
+							score+=scoreGolpe;
+							Log.i("golpe","Golpe: "+String.valueOf(delay_golpe)+"ms delay");
+							//delay=System.currentTimeMillis()-lastChange;
+							IS_DOWN=true;
+							lastGolpe=System.currentTimeMillis();
+											
+							if(golpes>3){
+								updateProgress(1);				
+							}
+							rect.setBackgroundColor(Color.rgb(Math.round(254*progress/progressGoal), Math.round(254*progress/progressGoal)*g, Math.round(254*progress/progressGoal)*b));
+					} //end of hand down				
 				
-						} 	
-				} //end of hand down				
-				
-			}
-				else{
-					//endPaja(); //Paja is ended, score computed etc.					
+					scoreText.setText(Integer.toString(score));
+				}
+				else{//if level is completed
 					changeLevel(1);
 					cmessage.setText(cMessageTemp);
 					cmessage.setVisibility(View.VISIBLE);
-					jumpLevel=true;
-					
+					jumpLevel=true;	
 				} 
-				
+			}	
+		
+			else{
+				Log.i("sensor","too early");
 			}
 		}
 		
@@ -377,8 +395,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     	}else if(progress>0 && i<0){
     		progress=Math.max(0, progress+i);
     	}else{
-        	if(delay!=0){
-        		vprogress=(1000/delay)*factorMult;
+        	if(delay_golpe!=0){
+        		vprogress=(1000/delay_golpe)*factorMult;
             	progress=Math.max(0,progress+vprogress);
             	//progress=progress+20;       	
         	}    			
@@ -390,103 +408,47 @@ public class MainActivity extends Activity implements SensorEventListener {
     	//}
     	return progress;
     	
-    	/*
-    	duration=(System.currentTimeMillis()-startTime)/1000;
-    	avFreq=golpes/duration;
-    	
-    	
-    	// frequency coeff
-    	if(frequency>0.5*avFreq){freqCoeff=+1;} //if acceleration (at least 20%)
-    	else if (frequency<avFreq){freqCoeff=-1;} //if deceleration (at least 20%)
-    	//else if (freqCoeff=2; //if more or less stable, bonus
-    	
-    	//quickToast(Float.toString(freqCoeff));
-    	
-    	if (freqCoeff<0){
-    		progress+=freqCoeff*timeSinceLastChange*1/300;
-    	}
-    	
-    	else 
-    		{
-    		progress+=frequency*freqCoeff*1/10;
-    		}
-    	progress=Math.max(progress,0);
-    	return progress;
-    	*/
     }
-    
-    /*
-    public void nextLevelAnimation(){
-    	
-    }
-    */
-    
+   
     public void changeLevel(int l){
-    	
-    	if(l<0){
-    		Toast.makeText(this, "level down", Toast.LENGTH_SHORT).show();
-    		}
-    	exlevel=level;
-    	level=Math.max(1,level+l);
-
-    	switch (level) {
-		case 1:
-			g=1;
-    		progressGoal=100;
-    		factorMult=1.5f;
-    		painThresold=60;
-    		painPenalty=5;
-    		decay_speed=1;
-    		cMessageTemp="Level 1";
-			break;
-		case 2:
-			g=1;
-    		progressGoal=300;
-    		factorMult=3;
-    		painThresold=57;
-    		painPenalty=25;
-    		decay_speed=2;
-    		cMessageTemp="Level 2";
-    		break;
-		case 3:
-			b=1;
-    		progressGoal=400;
-    		painThresold=56;
-    		painPenalty=40;
-    		factorMult=3;
-    		decay_speed=3;
-    		cMessageTemp="Level 3";
-    		break;
-		case 4:
-			r=1;
-    		progressGoal=600;
-    		painThresold=55;
-    		painPenalty=60;
-    		factorMult=4;
-    		decay_speed=4;
-    		cMessageTemp="Level 4";
-    		break;
-		case 5:
-			r=1;
-    		progressGoal=1000;
-    		painThresold=52;
-    		painPenalty=100;
-    		factorMult=5;
-    		decay_speed=5;
-    		cMessageTemp="Level 5";
-    		break;
-		default: endPaja();
-			break;
-    	}
-    	
-    	if(exlevel>1 && l<0){
-    		progress=progressGoal*0.7f;
+    	//the paja is over
+    	if(level+l==5){
+    		endPaja();
+    		Log.i("level", "paja ended");
     	}
     	else{
-    	progress=progressGoal*0.2f;
+    		if(l<0&&level>1){
+	    		Toast.makeText(this, "level down", Toast.LENGTH_SHORT).show();
+	    		Log.i("level","reached 0 out of decay or pain => level down");
+	    			level=level+l;
+		    		progressGoal=fappLevels[level-1].getProgressGoal();
+		    		decay_speed=fappLevels[level-1].getDecaySpeed();
+		    		progressPainPenalty=fappLevels[level-1].getProgressPainPenalty();
+		    		painThresold=fappLevels[level-1].getPainThreshold();
+		    		scorePainPenalty=fappLevels[level-1].getScorePainPenalty();
+		    		scoreLevelDownPenalty=fappLevels[level-1].getScoreLevelDownPenalty();
+		    		scoreGolpe=fappLevels[level-1].getScoreGolpe();
+		    		score=Math.min(score,lastSavedScore[level-1]); //score accumulated at failed level is lost
+		    		progress=progressGoal*0.7f;
+		    		levelText.setText(String.valueOf(level));
+		    		
+	    			}
+	    	else if(l>=0){//level up
+		    		level=level+l;
+		    		progressGoal=fappLevels[level-1].getProgressGoal();
+		    		decay_speed=fappLevels[level-1].getDecaySpeed();
+		    		progressPainPenalty=fappLevels[level-1].getProgressPainPenalty();
+		    		painThresold=fappLevels[level-1].getPainThreshold();
+		    		scorePainPenalty=fappLevels[level-1].getScorePainPenalty();
+		    		scoreLevelDownPenalty=fappLevels[level-1].getScoreLevelDownPenalty();
+		    		scoreGolpe=fappLevels[level-1].getScoreGolpe();
+		    		lastSavedScore[Math.max(0, level-2)]=score; //secure score reached so far
+		    		progress=progressGoal*0.25f;
+		    		levelText.setText(String.valueOf(level));
+	    	}
     	}
-    }
-
+  
+	}
 	
     public void changeHands(){
     	/*
@@ -500,45 +462,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     	RIGHT_HAND=!RIGHT_HAND;
     	*/
     }
-    
-    public float getProgress(){
-    	if(duration==0){
-    	avFreq=1;
-    	}
-    	else{
-    		duration=(System.currentTimeMillis()-startTime)/1000;
-    		avFreq=golpes/(duration+1);
-    	}
-    	
-    	// frequency coeff
-    	if(frequency>0.5*avFreq){freqCoeff=+1;} //if acceleration (at least 20%)
-    	else if (frequency<avFreq){freqCoeff=-1;} //if deceleration (at least 20%)
-    	//else if (freqCoeff=2; //if more or less stable, bonus
-    	
-    	//quickToast(Float.toString(freqCoeff));
-    	
-    	if (freqCoeff<0){
-    		progress=Math.max(0, progress+freqCoeff*delay*1/300);
-    	}
-    	
-    	else 
-    		{
-    		progress=Math.max(0,progress+frequency*freqCoeff*1/10);
-    		}
-    	//progress=Math.max(progress,0);
-    	return progress;
-    }
-    
-	public int getScore(){
-		float coeff_Slow=3;
-		float coeff_Fast=3;
-		float coeff_VeryFast=1;
-		float coeff_Duration=3;
-		return Math.round(
-				duration*golpes
-				/100);
-	}
-    
 
     public void endPaja(){
 		
@@ -546,7 +469,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     	mSensorManager.unregisterListener(this);
 		duration=(System.currentTimeMillis()-startTime)/1000;
     	Intent i = new Intent(getApplicationContext(),PajaCompleted.class);
-		i.putExtra("score", String.valueOf(getScore()));
+		i.putExtra("score", String.valueOf(score));
 		i.putExtra("duration", String.valueOf(duration));
 		i.putExtra("golpes", String.valueOf(golpes));
 
@@ -575,7 +498,7 @@ public void getAllBadges(){
 		mSensorManager.unregisterListener(this);
 		
     	Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-		i.putExtra("score", String.valueOf(getScore()));
+		i.putExtra("score", String.valueOf(score));
 		i.putExtra("duration", String.valueOf(duration));
 		startActivity(i);
     }
@@ -608,7 +531,7 @@ public void getAllBadges(){
 		toast.show();	
 	}
 
-
+	
 	public void initUser(){
 		SharedPreferences prefs = this.getSharedPreferences(
 			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
@@ -643,6 +566,11 @@ public void anim(View view){
 	Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
     //Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
     animationTarget.startAnimation(animation);
+}
+public void fadeOut(View view){
+	AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+	anim.setDuration(1000);
+	view.startAnimation(anim);
 }
 public void loadSound(){
 	soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
@@ -696,16 +624,17 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         cursor.close();
         
         //
-        ImageView back= (ImageView) findViewById(R.id.fappLogo);
+        back= (ImageView) findViewById(R.id.back);
         //back.setBackgroundResource(R.drawable.badge_fire);
         //back.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        /*
         try {
 			back.setImageBitmap(decodeUri(selectedImage));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
+        */
         // String picturePath contains the path of selected Image
     }
 
@@ -740,5 +669,45 @@ private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
     o2.inSampleSize = scale;
     return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
 
+}
+
+public void setLevelParameters(int difficulty){
+	
+	fappLevels = new fappLevel[4];
+
+	switch(difficulty){
+		case 1:
+			fappLevels[0] = new fappLevel(100,1,5,180,5,5,0);
+			fappLevels[1] = new fappLevel(200,1,10,150,5,5,5);
+			fappLevels[2] = new fappLevel(300,1,20,150,5,5,5);
+			fappLevels[3] = new fappLevel(400,1,40,150,5,5,5);
+			break;
+		case 2:
+			fappLevels[0] = new fappLevel(100,1,5,60,10,10,0);
+			fappLevels[1] = new fappLevel(200,2,10,65,10,20,10);
+			fappLevels[2] = new fappLevel(300,4,20,67,10,30,10);
+			fappLevels[3] = new fappLevel(400,5,40,70,10,40,10);
+			break;
+		case 3:
+			fappLevels[0] = new fappLevel(100,1,5,60,15,20,0);
+			fappLevels[1] = new fappLevel(200,2,10,65,15,30,15);
+			fappLevels[2] = new fappLevel(300,4,20,67,15,40,15);
+			fappLevels[3] = new fappLevel(400,5,40,70,15,50,15);
+			break;
+		case 4:
+			fappLevels[0] = new fappLevel(100,1,5,60,20,30,0);
+			fappLevels[1] = new fappLevel(200,2,10,65,20,40,20);
+			fappLevels[2] = new fappLevel(300,4,20,67,20,50,20);
+			fappLevels[3] = new fappLevel(400,5,40,70,20,60,20);
+			break;
+		case 5:
+			fappLevels[0] = new fappLevel(100,1,5,60,25,40,0);
+			fappLevels[1] = new fappLevel(200,2,10,65,25,50,25);
+			fappLevels[2] = new fappLevel(300,4,20,67,25,60,25);
+			fappLevels[3] = new fappLevel(400,5,40,70,25,100,25);
+			break;
+	}
+	Log.i("level","difficulty: "+String.valueOf(difficulty));
+	
 }
 }

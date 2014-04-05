@@ -44,12 +44,13 @@
     <!-- Messages -->
     <string name="message_empty_layout_changes">Add an item above to get started.</string>
     <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
-    <string name="inPajaMessage1">Fapp Away!</string>
+    
     <string name="progress_dialog_text">Working on it</string>
     <string name="gplus_connect">Signing in to share your fapp...</string>
 
     <!-- Fapp Messages -->
     <string name="pain">PAIN!!!</string>
+    <string name="inPajaMessage1"> </string>
     
     
     <!-- Accessibility-only descriptions -->

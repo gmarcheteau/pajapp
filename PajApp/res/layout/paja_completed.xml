@@ -46,7 +46,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textViewScore"
+        android:id="@+id/textViewCurrentScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -60,7 +60,7 @@
         android:id="@+id/TextNewHighScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewScore"
+        android:layout_below="@+id/textViewCurrentScore"
         android:layout_centerHorizontal="true"
         android:text="NEW HIGH SCORE!"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/TextNewHighScore"
         android:layout_marginTop="81dp"
-        android:layout_toRightOf="@+id/textViewScore"
+        android:layout_toRightOf="@+id/textViewCurrentScore"
         android:background="@color/bigWhite"
         android:onClick="onClick"
         android:src="@drawable/fbicon_small" />

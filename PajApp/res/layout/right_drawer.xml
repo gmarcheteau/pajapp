@@ -10,8 +10,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="62dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
         android:onClick="onClick"
-        android:src="@drawable/hand_icon" />
+        android:scaleType="fitXY"
+        android:src="@drawable/settings_icon_2" />
 
     <ImageButton
         android:id="@+id/imageButton2r"
@@ -20,8 +25,13 @@
         android:layout_alignLeft="@+id/imageButton1r"
         android:layout_below="@+id/imageButton1r"
         android:layout_marginTop="34dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
         android:onClick="onClick"
-        android:src="@drawable/hand_icon_red" />
+        android:scaleType="fitXY"
+        android:src="@drawable/share_icon_grey" />
 
     <ImageButton
         android:id="@+id/buttonCloseRight"
@@ -29,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="@color/Black"
         android:onClick="onClick"
-        android:src="@android:drawable/ic_media_rew" />
+        android:src="@android:drawable/ic_media_ff" />
 
 </RelativeLayout>

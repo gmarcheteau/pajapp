@@ -2,31 +2,32 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Black"
     android:onClick="onClick"
     android:orientation="vertical" >
 
-    
     <ImageView
-        android:id="@+id/fappLogo"
+        android:id="@+id/fappButtonCredits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="63dp"
         android:adjustViewBounds="true"
-        android:maxHeight="250dp"
-        android:maxWidth="250dp"
+        android:maxHeight="300dp"
+        android:maxWidth="300dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/fapplogo_t" />
-    
+        android:src="@drawable/fapp_logo_hand" />
+
     <ImageButton
         android:id="@+id/settingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@id/fappLogo"
-        android:layout_marginBottom="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:maxHeight="40dp"
@@ -34,13 +35,30 @@
         android:onClick="onClick"
         android:scaleType="fitXY"
         android:src="@drawable/settings_icon_2" />
-    
+
+    <ImageButton
+        android:id="@+id/buttonFakeFapp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="40dp"
+        android:maxWidth="40dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/star_icon" />
+
     <ImageButton
         android:id="@+id/shareButtonCredits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/fappLogo"
-        android:layout_alignTop="@id/settingsButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:maxHeight="40dp"
@@ -48,33 +66,5 @@
         android:onClick="onClick"
         android:scaleType="fitXY"
         android:src="@drawable/share_icon_grey" />
-
-    <ImageView
-        android:id="@+id/fappButtonCredits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fappLogo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        android:baselineAlignBottom="true"
-        android:maxHeight="450dp"
-        android:maxWidth="450dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/hand_icon_red" />
-
-    <ImageButton
-        android:id="@+id/buttonFakeFapp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/shareButtonCredits"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:background="@color/white"
-        android:maxHeight="60dp"
-        android:maxWidth="60dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/star_icon" />
 
 </RelativeLayout>
