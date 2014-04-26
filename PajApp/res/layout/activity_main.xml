@@ -8,13 +8,14 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
-
+    tools:context=".MainActivity" xmlns:app="http://schemas.android.com/apk/res-auto">
+    
     <TextView
         android:id="@+id/textViewCurrentScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="50dp"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/bigWhite"
@@ -36,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
         android:adjustViewBounds="true"
         android:maxHeight="350dp"
         android:maxWidth="350dp"
@@ -47,19 +49,13 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
         android:alpha="0.8"
         android:background="@color/bigRed"
         android:measureAllChildren="false"
         android:minHeight="10dp" >
 
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/levelView"
@@ -72,5 +68,23 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/bigWhite"
         android:textSize="30sp" />
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ad2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-6874112603029385/3938324951" >
+
+    </com.google.android.gms.ads.AdView>
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="40dp"
+        android:visibility="invisible" />
 
 </FrameLayout>

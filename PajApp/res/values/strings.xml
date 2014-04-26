@@ -7,6 +7,10 @@
     <string name="view_badges">View badges</string>
     <!-- real appID:298577350281191 -->
     <string name="app_id">298577350281191</string>
+    <string name="admob_id">pub-6874112603029385</string>
+    <string name="admob_home_id">ca-app-pub-6874112603029385/4636328955</string>
+    <string name="admob_completed_id">ca-app-pub-6874112603029385/3938324951</string>
+    
     <string name="badge_golpes">Badges Golpes</string>
     <string name="badge_duration">Badge Duration</string>
     <string name="badge_score">Badge Score</string>

@@ -2,17 +2,27 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Black"
     android:onClick="onClick"
-    android:orientation="vertical" >
+    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/lib/com.google.ads">
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        ads:adUnitId="ca-app-pub-6874112603029385/4636328955"
+        ads:adSize="SMART_BANNER">
+    </com.google.android.gms.ads.AdView>
 
     <ImageView
         android:id="@+id/fappButtonCredits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="false"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="63dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp"
         android:adjustViewBounds="true"
         android:maxHeight="300dp"
         android:maxWidth="300dp"
@@ -24,10 +34,9 @@
         android:id="@+id/settingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="20dp"
+        android:layout_above="@+id/ad"
+        android:layout_alignRight="@+id/fappButtonCredits"
+        android:layout_marginBottom="15dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:maxHeight="40dp"
@@ -37,28 +46,11 @@
         android:src="@drawable/settings_icon_2" />
 
     <ImageButton
-        android:id="@+id/buttonFakeFapp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:adjustViewBounds="true"
-        android:background="@color/Black"
-        android:maxHeight="40dp"
-        android:maxWidth="40dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/star_icon" />
-
-    <ImageButton
         android:id="@+id/shareButtonCredits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="20dp"
+        android:layout_alignLeft="@+id/fappButtonCredits"
+        android:layout_alignTop="@+id/settingsButton"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:maxHeight="40dp"
@@ -66,5 +58,19 @@
         android:onClick="onClick"
         android:scaleType="fitXY"
         android:src="@drawable/share_icon_grey" />
+
+    <ImageButton
+        android:id="@+id/buttonFakeFapp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/settingsButton"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:background="@color/White"
+        android:maxHeight="40dp"
+        android:maxWidth="40dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/star_icon" />
 
 </RelativeLayout>

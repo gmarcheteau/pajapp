@@ -1,4 +1,4 @@
-package com.bigotapps.pajapp;
+	package com.bigotapps.pajapp;
 
 
 import java.util.Arrays;
@@ -15,11 +15,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
@@ -32,6 +33,8 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
@@ -46,14 +49,18 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	public long[] pattern = {1000};
 
 
-	Integer score;
-	long topScore;
-	long topGolpes;
-	long topDuration;
-	boolean hasShared=false;
-	boolean hasSharedPref;
-	long duration;
-	long golpes;
+	public int score=0;
+	public long topScore;
+	public long topGolpes;
+	public long topDuration;
+	public boolean hasShared=false;
+	public boolean hasSharedPref;
+	public long duration=0;
+	public int golpes=0;
+	public int pain=0;
+	Bundle pajametrics;
+	
+	public TextView scoreView;
 	
 	Integer badgeScoreTarget=100000;
 	Integer badgeDurationTarget=20;
@@ -69,10 +76,14 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
     private ConnectionResult mConnectionResult;
     
     public ImageButton mShareButton; 
-    SharedPreferences prefs;
+    public SharedPreferences prefs;
     private UiLifecycleHelper uiHelper;
-  
+    
+    congratsFragment congratsFragment;
+    pajaMetricsFragment pajaMetricsFragment;
+    pajaCompleteShareFragment pajaCompleteShareFragment;
 
+  
 	protected void onSessionStateChange(Session session, SessionState state,
 			Exception exception) {
 		Log.i(TAG,"SESSION CHANGED??");
@@ -97,7 +108,63 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.paja_completed);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
+        setContentView(R.layout.paja_complete);
+		//get Pajameters	
+		if(this.getIntent().getExtras() != null){
+		//use paja parameters
+			
+			duration = Long.valueOf(getIntent().getExtras().getString("duration"));
+			score = Integer.valueOf(getIntent().getExtras().getString("score"));
+			golpes = Integer.valueOf(getIntent().getExtras().getString("golpes"));
+			pain = Integer.valueOf(getIntent().getExtras().getString("pain"));
+			
+			//prepare bundle with pajametrics to pass to fragment
+			pajametrics = new Bundle();
+			pajametrics.putString("score", "Score: "+String.valueOf(score));
+			pajametrics.putString("golpes", "Golpes: "+String.valueOf(golpes));
+			pajametrics.putString("pain", "Painful golpes: "+String.valueOf(pain));
+			
+			//scoreView.setText(String.valueOf(score)+" pts");
+			Log.i(TAG,"Paja score: "+ score +"\n Duration: " + duration + "s");
+			
+		}
+		
+		//define/retrieve the fragments
+		if (savedInstanceState == null) {
+	        // Add the fragments on initial activity setup
+	    	congratsFragment = new congratsFragment();
+	        getSupportFragmentManager()
+	        .beginTransaction()
+	        .add(R.id.congrats_frame, congratsFragment)
+	        .commit();
+	        
+	        pajaMetricsFragment = new pajaMetricsFragment();
+	        pajaMetricsFragment.setArguments(pajametrics);
+	        getSupportFragmentManager()
+	        .beginTransaction()
+	        .add(R.id.pajametrics_frame, pajaMetricsFragment)
+	        .commit();
+	        
+	        pajaCompleteShareFragment = new pajaCompleteShareFragment();
+	        getSupportFragmentManager()
+	        .beginTransaction()
+	        .add(R.id.pajashare_frame, pajaCompleteShareFragment)
+	        .commit();
+	        
+	    } else {
+	        // Or set the fragments from restored state info
+	    	congratsFragment = (congratsFragment) getSupportFragmentManager()
+	    			.findFragmentById(R.id.congrats_frame);
+	    	pajaMetricsFragment = (pajaMetricsFragment) getSupportFragmentManager()
+	    	        .findFragmentById(R.id.pajametrics_frame);
+	    	pajaCompleteShareFragment = (pajaCompleteShareFragment) getSupportFragmentManager()
+	    	        .findFragmentById(R.id.pajashare_frame);
+	    }
 	
 		 uiHelper = new UiLifecycleHelper(this, callback);
 		 uiHelper.onCreate(savedInstanceState);
@@ -118,19 +185,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 		 
 		//shared preferences, to store Best Scores and stuff
 			prefs = this.getSharedPreferences("com.bigotapps.pajapp", Context.MODE_PRIVATE);
-		
-		//get Pajameters	
-		if(this.getIntent().getExtras() != null){
-			//use paja parameters
-			duration = Long.valueOf(this.getIntent().getExtras().getString("duration"));
-			score = Integer.valueOf(this.getIntent().getExtras().getString("score"));
-			golpes = Long.valueOf(this.getIntent().getExtras().getString("golpes"));
-			//show score
-			TextView scoreView = (TextView) findViewById(R.id.textViewCurrentScore);
-			scoreView.setText(score+" pts");
-			Log.i(TAG,"Paja score: "+ score +"\n Duration: " + duration + "s");
-		}
-		
+			
 		//update Preferences
 		fetchPrefs(prefs);
 		updatePrefs(prefs); //incl badges
@@ -146,6 +201,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 				v.vibrate(pattern,-1);
 				playSound();
 		
+	 
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -208,15 +264,6 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 				break;
 			case R.id.WhatsappButton:
 				WhatsAppShare();
-				break;
-			case R.id.mailButton:
-				mailPaja();
-				break;
-			case R.id.NewPajaButton:
-				newPaja();
-				break;
-			case R.id.WOFButton:
-				WoF();
 				break;
 			case R.id.FBShareButton:
 				fbShare();
@@ -290,11 +337,6 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	/**
 	 * Facebook
 	 */
-	public void fbDialog(){
-		FragmentManager manager= getSupportFragmentManager();
-		FBDialog fbDialog=new FBDialog();
-		fbDialog.show(manager, "fbDialog");
-	}
 	public void fbShare(){
 		
 		OpenGraphObject fapp = OpenGraphObject.Factory.createForPost("pajappbeta:fapp");
@@ -470,7 +512,6 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	    Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_and_rotate);
 	    animationTarget.startAnimation(animation);
 	}
-	
 	
 }
 

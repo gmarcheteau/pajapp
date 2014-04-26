@@ -35,6 +35,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+
 
 public class MainActivity extends Activity implements SensorEventListener {
 
@@ -68,6 +72,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 	public boolean RIGHT_HAND=true;
 	public boolean IS_DOWN;
 	public int golpes = 0;
+	public int painCount=0;
 	public int targetGolpes = 50;
 	public int countSlow=1;
 	public int countFast=1;
@@ -128,6 +133,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 	Integer soundId2;
 	AudioManager mgr;
 	float volume;
+    
+    private InterstitialAd interstitial;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +144,36 @@ public class MainActivity extends Activity implements SensorEventListener {
 	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		setContentView(R.layout.activity_main);
+	        setContentView(R.layout.activity_main);
+	        
+	      //ad initialization
+	        AdView adView = (AdView) this.findViewById(R.id.ad2);
+	        
+	        
+	        try{
+	        	AdRequest adRequest = new AdRequest.Builder()
+		            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+		            .addTestDevice("BF37ACEAC7B5CA1DD5881A71B6D1E155")
+		            .build();
+	            adView.loadAd(adRequest);
+	        }
+	        catch(Exception e){
+	        	Log.i("Ads_greg",e.getMessage());
+	        }
+	        
+	        
+	     // Create the interstitial.
+	        interstitial = new InterstitialAd(this);
+	        interstitial.setAdUnitId(getString(R.string.admob_completed_id));
+	     // Create ad request.
+	        AdRequest adRequest = new AdRequest.Builder()
+		        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+		        .addTestDevice("BF37ACEAC7B5CA1DD5881A71B6D1E155")
+		        .build();;
+	     // Begin loading your interstitial.
+	        interstitial.loadAd(adRequest);
+	        
+		
 		
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -276,7 +312,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 				if(progress<progressGoal){	
 					if(delay_golpe<painThresold&&!IS_DOWN){	//Pain if freq is too high		
 						if (delay_golpe!=previousLastChange){
-					
+							painCount++;
 							Log.w("golpe","PAIN --- Delay: "+String.valueOf(delay_golpe)+"   Threshold: "+String.valueOf(painThresold));
 						 	//Progress penalty for Pain activation
 					    	soundPool.play(soundId2,volume,volume,1,0,1.3f);
@@ -472,7 +508,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 		i.putExtra("score", String.valueOf(score));
 		i.putExtra("duration", String.valueOf(duration));
 		i.putExtra("golpes", String.valueOf(golpes));
+		i.putExtra("pain", String.valueOf(painCount));
 
+		//display the interstitial
+        //displayInterstitial();
 		startActivity(i);
     }
  public void goGallery(){
@@ -677,10 +716,10 @@ public void setLevelParameters(int difficulty){
 
 	switch(difficulty){
 		case 1:
-			fappLevels[0] = new fappLevel(100,1,5,180,5,5,0);
-			fappLevels[1] = new fappLevel(200,1,10,150,5,5,5);
-			fappLevels[2] = new fappLevel(300,1,20,150,5,5,5);
-			fappLevels[3] = new fappLevel(400,1,40,150,5,5,5);
+			fappLevels[0] = new fappLevel(100,1,5,120,5,5,0);
+			fappLevels[1] = new fappLevel(200,1,10,120,5,5,5);
+			fappLevels[2] = new fappLevel(300,1,20,120,5,5,5);
+			fappLevels[3] = new fappLevel(400,1,40,120,5,5,5);
 			break;
 		case 2:
 			fappLevels[0] = new fappLevel(100,1,5,60,10,10,0);
@@ -709,5 +748,14 @@ public void setLevelParameters(int difficulty){
 	}
 	Log.i("level","difficulty: "+String.valueOf(difficulty));
 	
+}
+
+// Invoke displayInterstitial() when you are ready to display an interstitial.
+public void displayInterstitial() {
+  if (interstitial.isLoaded()) {
+    interstitial.show();
+    Log.i("Ads_greg","display interst - loaded");
+  }
+  else {Log.i("Ads_greg","display interst - not loaded");}
 }
 }

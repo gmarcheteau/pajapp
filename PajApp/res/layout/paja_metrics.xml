@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bigRed"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/pajaMetrics_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="10dp"
+        android:text="Score: 0 pts"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigWhite" />
+
+    <TextView
+        android:id="@+id/pajaMetrics_golpes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
+        android:text="Golpes: 0"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigWhite" />
+
+    <TextView
+        android:id="@+id/pajaMetricsPain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
+        android:text="Painful golpes: 0"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/bigWhite" />
+
+</LinearLayout>

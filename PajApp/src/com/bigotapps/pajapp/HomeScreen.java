@@ -79,7 +79,7 @@ public class HomeScreen extends FragmentActivity {
 			public void onDrawerClosed(View arg0) {
 				// TODO Auto-generated method stub
 				Log.i("GregBug","Drawer Closed");
-				adjustContentPosition(true);//TRUE: parameter means that content frame should be re-centered
+				//adjustContentPosition(true);//TRUE: parameter means that content frame should be re-centered
 			}
 
 			@Override
@@ -94,7 +94,7 @@ public class HomeScreen extends FragmentActivity {
 				//Log.i("GregBug","Drawer Slide: "+String.valueOf(arg1));
 				
 				//sliding the content view: need to do it right, otherwise slows down everything? 
-				adjustContentPosition(false);
+				//adjustContentPosition(false);
 				
 			}
 
@@ -185,6 +185,7 @@ public class HomeScreen extends FragmentActivity {
 			i.putExtra("score", "5000");
 			i.putExtra("duration", "100");
 			i.putExtra("golpes", "2000");
+			i.putExtra("pain", "8");
 			startActivity(i);
 	 }
 	 
