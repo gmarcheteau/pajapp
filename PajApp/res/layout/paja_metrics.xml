@@ -15,7 +15,8 @@
         android:layout_marginTop="10dp"
         android:text="Score: 0 pts"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigWhite" />
+        android:textColor="@color/bigWhite"
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/pajaMetrics_golpes"
@@ -25,7 +26,8 @@
         android:layout_marginLeft="100dp"
         android:text="Golpes: 0"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigWhite" />
+        android:textColor="@color/bigWhite"
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/pajaMetricsPain"
@@ -35,6 +37,7 @@
         android:layout_marginLeft="100dp"
         android:text="Painful golpes: 0"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/bigWhite" />
+        android:textColor="@color/bigWhite"
+        android:textSize="30sp" />
 
 </LinearLayout>

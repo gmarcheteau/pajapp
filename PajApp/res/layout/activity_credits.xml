@@ -1,9 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/bigWhite"
     android:onClick="onClick"
-    android:orientation="vertical" xmlns:app="http://schemas.android.com/apk/lib/com.google.ads">
+    android:orientation="vertical" >
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -22,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="80dp"
         android:adjustViewBounds="true"
         android:maxHeight="300dp"
         android:maxWidth="300dp"
@@ -31,39 +34,10 @@
         android:src="@drawable/fapp_logo_hand" />
 
     <ImageButton
-        android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/ad"
-        android:layout_alignRight="@+id/fappButtonCredits"
-        android:layout_marginBottom="15dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:maxHeight="40dp"
-        android:maxWidth="40dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/settings_icon_2" />
-
-    <ImageButton
-        android:id="@+id/shareButtonCredits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/fappButtonCredits"
-        android:layout_alignTop="@+id/settingsButton"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:maxHeight="40dp"
-        android:maxWidth="40dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/share_icon_grey" />
-
-    <ImageButton
         android:id="@+id/buttonFakeFapp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/settingsButton"
+        android:layout_alignBottom="@+id/shareHomeButton"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
         android:background="@color/White"
@@ -72,5 +46,35 @@
         android:onClick="onClick"
         android:scaleType="fitXY"
         android:src="@drawable/star_icon" />
+
+    <ImageButton
+        android:id="@+id/shareHomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ad"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:adjustViewBounds="true"
+        android:background="@color/bigWhite"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/close_greg" />
+
+    <ImageButton
+        android:id="@+id/goLevelHomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ad"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dp"
+        android:adjustViewBounds="true"
+        android:background="@color/bigWhite"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/open_greg" />
 
 </RelativeLayout>

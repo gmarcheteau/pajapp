@@ -54,6 +54,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 
 
 	public int score=0;
+	public int totalFapps;
 	public long topScore;
 	public long topGolpes;
 	public long topDuration;
@@ -132,9 +133,9 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 			
 			//prepare bundle with pajametrics to pass to fragment
 			pajametrics = new Bundle();
-			pajametrics.putString("score", "Score: "+String.valueOf(score));
-			pajametrics.putString("golpes", "Golpes: "+String.valueOf(golpes));
-			pajametrics.putString("pain", "Painful golpes: "+String.valueOf(pain));
+			pajametrics.putString("score", getString(R.string.score)+String.valueOf(score));
+			pajametrics.putString("golpes", getString(R.string.golpes)+String.valueOf(golpes));
+			pajametrics.putString("pain", getString(R.string.pain)+String.valueOf(pain));
 			
 			//scoreView.setText(String.valueOf(score)+" pts");
 			Log.i(TAG,"Paja score: "+ score +"\n Duration: " + duration + "s");
@@ -254,8 +255,8 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 		//shared preferences, to store Best Scores and stuff
 		SharedPreferences prefs = this.getSharedPreferences(
 			      "com.bigotapps.pajapp", Context.MODE_PRIVATE);
-		fetchPrefs(prefs);
-		updatePrefs(prefs);
+		//fetchPrefs(prefs);
+		//updatePrefs(prefs);
 		
 		boolean FB_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.FB_Connect", false);
 		boolean GP_CONNECT = prefs.getBoolean("com.bigotapps.pajapp.gPlusConnect", false);
@@ -275,16 +276,31 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	public void onClick(View view){
 		 switch(view.getId()){
 			case R.id.gPlusShareButton:
-				sendAnalyticsEvent("share","share","Google Plus");
-				gplusShare();
+				sendAnalyticsEvent("share","share fApp completed","Google Plus");
+				try{
+					gplusShare();
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+				}
 				break;
 			case R.id.WhatsappButton:
-				sendAnalyticsEvent("share","share","Whatsapp");
-				WhatsAppShare();
+				sendAnalyticsEvent("share","share fApp completed","Whatsapp");
+				try{
+					WhatsAppShare();
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+				}
 				break;
 			case R.id.FBShareButton:
-				sendAnalyticsEvent("share","share","Facebook");
-				fbShare();
+				sendAnalyticsEvent("share","share fApp completed","Facebook");
+				try{
+					fbShare();
+				}
+				catch (Exception e) {
+					// TODO: handle exception
+				}
 				break;
 	 }
 }
@@ -330,14 +346,24 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 			prefs.edit().putLong("com.bigotapps.pajapp.topduration",Math.max(duration, topDuration)).commit();
 			prefs.edit().putLong("com.bigotapps.pajapp.topgolpes",Math.max(golpes, topGolpes)).commit();
 			prefs.edit().putBoolean("com.bigotapps.pajapp.hasshared",hasShared||hasSharedPref).commit();
-			fetchPrefs(prefs); //need to re-fetch in order to update local values tested in updateBadges 
-			updateBadges(prefs);
+			prefs.edit().putInt("com.bigotapps.pajapp.totalFapps",totalFapps).commit();
+			//fetchPrefs(prefs); //need to re-fetch in order to update local values tested in updateBadges 
+			//updateBadges(prefs);
 		}
 	public void fetchPrefs(SharedPreferences prefs){
 		topScore = prefs.getLong("com.bigotapps.pajapp.topscore", 0);
 		topGolpes=prefs.getLong("com.bigotapps.pajapp.topgolpes", 0);
 		topDuration=prefs.getLong("com.bigotapps.pajapp.topduration", 0);
 		hasSharedPref=prefs.getBoolean("com.bigotapps.pajapp.hasshared", false);
+		totalFapps=prefs.getInt("com.bigotapps.pajapp.totalFapps", 1)+1;
+		Log.e("Prefs","totalFapps: "+String.valueOf(totalFapps));
+		
+		if (hasSharedPref) {
+			prefs.edit().putBoolean("com.bigotapps.pajapp.diff2Unlocked",true).commit();
+		}
+		if (totalFapps>14) {
+			prefs.edit().putBoolean("com.bigotapps.pajapp.diff3Unlocked",true).commit();
+		}
 	}
 	
 	
@@ -346,22 +372,22 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 		if (topScore>badgeScoreTarget){
 			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeScore_unlocked", true).commit();
 			//should do something funkier than a toast
-			Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT).show();
 		}
 		if (topDuration>badgeDurationTarget){
 			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeDuration_unlocked", true).commit();
 			//should do something funkier than a toast
-			Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getApplicationContext(), "new badge: duration", Toast.LENGTH_SHORT).show();
 		}
 		if (topGolpes>badgeGolpesTarget){
 			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeGolpes_unlocked", true).commit();
 			//should do something funkier than a toast
-			Toast.makeText(this.getApplicationContext(), "new badge: golpes", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getApplicationContext(), "new badge: golpes", Toast.LENGTH_SHORT).show();
 		}
 		if (hasShared&!hasSharedPref){
 			prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
 			//should do something funkier than a toast
-			Toast.makeText(this.getApplicationContext(), "new badge: share", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this.getApplicationContext(), "new badge: share", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -369,7 +395,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	 * Facebook
 	 */
 	public void fbShare(){
-		
+		prefs.edit().putBoolean("com.bigotapps.pajapp.diff2Unlocked", true).commit();
 		OpenGraphObject fapp = OpenGraphObject.Factory.createForPost("pajappbeta:fapp");
 		fapp.setType("fapp");
 		fapp.setTitle("Fapp");
@@ -437,6 +463,7 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 			 if (errorCode == ConnectionResult.SUCCESS) {
 		    	  hasShared=true;
 		    	  prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+		    	  prefs.edit().putBoolean("com.bigotapps.pajapp.diff2Unlocked", true).commit();
 		    	     	  
 		    	 PlusShare.Builder builder = new PlusShare.Builder(this, mPlusClient);	             
 		         builder.addCallToAction("CHALLENGE",Uri.parse("https://plus.google.com/u/0/106383952060977394931"),"pajaBack");
@@ -471,9 +498,9 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
     @Override
 	public void onConnected(Bundle b) {
     	mConnectionProgressDialog.dismiss();
-        String accountName = mPlusClient.getAccountName();
-        Log.w(TAG,accountName + " is connected.");
-        mShareButton.setEnabled(true); 
+        //String accountName = mPlusClient.getAccountName();
+        //Log.w(TAG,accountName + " is connected.");
+        //mShareButton.setEnabled(true); 
         if(wantedToShare){
 			Log.i(TAG,"Wants to share, calling gplusShare again.");
 			gplusShare();
@@ -509,11 +536,12 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
     public void WhatsAppShare() {
 	    Intent waIntent = new Intent(Intent.ACTION_SEND);
 	    waIntent.setType("text/plain");
-	            String text = "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts";
+	            String text =  getString(R.string.messageWhatsapp_fapp)+"\n"+getString(R.string.score) + score+"\n"+getString(R.string.golpes) + golpes;
 	    waIntent.setPackage("com.whatsapp");
 	    if (waIntent != null) {
 	    	hasShared=true;
 	    	prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+	    	prefs.edit().putBoolean("com.bigotapps.pajapp.diff2Unlocked", true).commit();
 	    	waIntent.putExtra(Intent.EXTRA_TEXT, text);//
 	        startActivity(Intent.createChooser(waIntent, "Share with"));
 	    } else {
@@ -529,10 +557,11 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
     public void mailPaja(){
 		hasShared=true;
 		prefs.edit().putBoolean("com.bigotapps.pajapp.badgeShare_unlocked", true).commit();
+		prefs.edit().putBoolean("com.bigotapps.pajapp.diff2Unlocked", true).commit();
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/html");
-		intent.putExtra(Intent.EXTRA_SUBJECT, "Te mandan una paja");
-		intent.putExtra(Intent.EXTRA_TEXT, "Hola,\n \nUn amigo quiere compartir contigo la paja siguiente: \n \nDuration: "+duration+"s \nScore: "+score+" pts");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "fApp");
+		intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.messageWhatsapp_fapp)+"\n"+getString(R.string.score) + score+"\n"+getString(R.string.golpes) + golpes);
 		startActivity(Intent.createChooser(intent, "Share Paja"));
 	}
     

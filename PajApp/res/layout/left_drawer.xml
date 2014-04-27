@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.8"
+    android:alpha="0.9"
     android:background="@color/Black" >
 
     <ImageButton
@@ -11,24 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_margin="50dp"
         android:background="@color/Black"
         android:onClick="onClick"
         android:src="@android:drawable/ic_media_rew" />
-
-    <ImageButton
-        android:id="@+id/buttonLevel2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonLevel1"
-        android:layout_below="@+id/buttonLevel1"
-        android:adjustViewBounds="true"
-        android:background="@color/Black"
-        android:enabled="false"
-        android:maxHeight="90dp"
-        android:maxWidth="90dp"
-        android:onClick="onClick"
-        android:scaleType="fitXY"
-        android:src="@drawable/button_level_2" />
 
     <ImageButton
         android:id="@+id/buttonLevel3"
@@ -43,14 +29,14 @@
         android:maxWidth="90dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/button_level_3" />
+        android:src="@drawable/new_button_level_3" />
 
     <ImageButton
-        android:id="@+id/buttonLevel4"
+        android:id="@+id/buttonLevel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonLevel3"
-        android:layout_below="@+id/buttonLevel3"
+        android:layout_alignLeft="@+id/buttonLevel1"
+        android:layout_below="@+id/buttonLevel1"
         android:adjustViewBounds="true"
         android:background="@color/Black"
         android:enabled="false"
@@ -58,22 +44,22 @@
         android:maxWidth="90dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/button_level_4" />
-    
+        android:src="@drawable/new_button_level_2" />
+
     <ImageButton
-        android:id="@+id/buttonLevel5"
+        android:id="@+id/helpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/buttonLevel4"
-        android:layout_below="@+id/buttonLevel4"
+        android:layout_alignBottom="@+id/buttonCloseLeft"
+        android:layout_alignLeft="@+id/buttonLevel3"
+        android:layout_marginBottom="31dp"
         android:adjustViewBounds="true"
         android:background="@color/Black"
-        android:enabled="false"
         android:maxHeight="90dp"
         android:maxWidth="90dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/button_level_5" />
+        android:src="@drawable/new_button_level_help" />
 
     <ImageButton
         android:id="@+id/buttonLevel1"
@@ -81,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:adjustViewBounds="true"
         android:background="@color/Black"
         android:maxHeight="90dp"

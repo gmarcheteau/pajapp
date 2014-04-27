@@ -150,7 +150,7 @@ public class Credits extends Activity {
 				mp.release();
 				startPaja();
 				break;
-			case R.id.settingsButton:
+			case R.id.shareHomeButton:
 				playSound(R.raw.staple, 1f);
 				mp.release();
 				//goSettings();
@@ -161,7 +161,7 @@ public class Credits extends Activity {
 				mp.release();
 				startPaja();
 				break;
-			case R.id.shareButtonCredits:
+			case R.id.goLevelHomeButton:
 				playSound(R.raw.staple, 1f);
 				mp.release();
 				//share();

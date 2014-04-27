@@ -24,8 +24,13 @@
     <string name="title_badge_detail">Badge Detail</string>
     <string name="title_activity_badge_slide">BadgeSlideActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="messageGPlus">Hello there! I\'m sharing this fapp with you, I hope you\'ll like it.</string>
+    
 
+    <!-- PajaMetrics -->
+    <string name="score">Score: </string>
+    <string name="golpes">Strokes: </string>
+    <string name="pain">Painful strokes: </string>
+    
     <!-- Titles -->
     <string name="title_crossfade">Simple Crossfade</string>
     <string name="title_card_flip">Card Flip</string>
@@ -46,14 +51,21 @@
     <string name="action_photo">View photo</string>
 
     <!-- Messages -->
+    <string name="messageGPlus">Hello there! I\'m sharing this fapp with you, I hope you\'ll like it.</string>
+    <string name="messageGPlus_global">Hey there!\nI\'m using fApp, you should check it out!</string>
+    <string name="messageWhatsapp_global">Hey there!\nI\'m using fApp, you should check it out!</string>
+    <string name="messageWhatsapp_fapp">Hey there! \n I\'m sending you this fApp, I hope you\'ll enjoy it!</string>
+    <string name="unlockDiff2">Share a fApp to unlock Level 2</string>
+    <string name="unlockDiff3_1">Complete </string>
+    <string name="unlockDiff3_2">more fApps to unlock Level 3</string>
     <string name="message_empty_layout_changes">Add an item above to get started.</string>
     <string name="message_zoom_touch_expand">Touch a photo to expand it.</string>
     
     <string name="progress_dialog_text">Working on it</string>
     <string name="gplus_connect">Signing in to share your fapp...</string>
+    <string name="gplus_connect2">Signing in to share from G+...</string>
 
     <!-- Fapp Messages -->
-    <string name="pain">PAIN!!!</string>
     <string name="inPajaMessage1"> </string>
     
     

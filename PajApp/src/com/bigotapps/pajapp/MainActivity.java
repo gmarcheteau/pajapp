@@ -475,7 +475,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void changeLevel(int l){
     	//the paja is over
     	if(level+l==5){
-    		sendAnalyticsEvent("game","fApp completed","fApp completed",Long.valueOf(score));
+    		sendAnalyticsEvent("game","complete fApp","fApp completed",Long.valueOf(score));
     		endPaja();
     		Log.i("level", "paja ended");
     	}

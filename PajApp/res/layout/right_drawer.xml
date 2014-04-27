@@ -6,7 +6,7 @@
     android:background="@color/Black" >
 
     <ImageButton
-        android:id="@+id/imageButton1r"
+        android:id="@+id/FB_share_drawer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -18,22 +18,22 @@
         android:maxWidth="60dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/settings_icon_2" />
+        android:src="@drawable/fbicon_small" />
 
     <ImageButton
-        android:id="@+id/imageButton2r"
+        android:id="@+id/GPlus_share_drawer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageButton1r"
-        android:layout_below="@+id/imageButton1r"
-        android:layout_marginTop="34dp"
+        android:layout_alignLeft="@+id/FB_share_drawer"
+        android:layout_below="@+id/FB_share_drawer"
+        android:layout_marginTop="30dp"
         android:adjustViewBounds="true"
         android:background="@color/Black"
         android:maxHeight="60dp"
         android:maxWidth="60dp"
         android:onClick="onClick"
         android:scaleType="fitXY"
-        android:src="@drawable/share_icon_grey" />
+        android:src="@drawable/gplusicon_small" />
 
     <ImageButton
         android:id="@+id/buttonCloseRight"
@@ -41,8 +41,39 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
         android:background="@color/Black"
         android:onClick="onClick"
         android:src="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/W_share_drawer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/GPlus_share_drawer"
+        android:layout_below="@+id/GPlus_share_drawer"
+        android:layout_marginTop="30dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/whatsapp_logo_small" />
+
+    <ImageButton
+        android:id="@+id/Rate_drawer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/W_share_drawer"
+        android:layout_below="@id/W_share_drawer"
+        android:layout_marginTop="30dp"
+        android:adjustViewBounds="true"
+        android:background="@color/Black"
+        android:maxHeight="60dp"
+        android:maxWidth="60dp"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@drawable/star_icon" />
 
 </RelativeLayout>

@@ -54,7 +54,7 @@
                 android:typeface="monospace" />
 
             <Button
-                android:id="@+id/settingsButton"
+                android:id="@+id/shareHomeButton"
                 style="@style/AppTheme"
                 android:layout_width="300dp"
                 android:layout_height="fill_parent"
