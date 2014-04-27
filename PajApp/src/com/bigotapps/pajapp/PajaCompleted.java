@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigotapps.pajapp.fApplication.TrackerName;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
@@ -35,6 +36,9 @@ import com.facebook.model.OpenGraphObject;
 import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
@@ -108,6 +112,9 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//ANALYTICS: Get a Tracker (should auto-report)
+        ((fApplication) getApplication()).getTracker(fApplication.TrackerName.APP_TRACKER);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
@@ -231,7 +238,8 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 	    super.onStop();
 	    mPlusClient.disconnect();
 	    //mShareButton.setEnabled(false);
-	    
+	  //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+	      GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 	@Override
 	protected void onPause() {
@@ -257,15 +265,25 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 		}
 		
 	}
+ @Override
+    public void onStart() {
+        super.onStart();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
 	public void onClick(View view){
 		 switch(view.getId()){
 			case R.id.gPlusShareButton:
+				sendAnalyticsEvent("share","share","Google Plus");
 				gplusShare();
 				break;
 			case R.id.WhatsappButton:
+				sendAnalyticsEvent("share","share","Whatsapp");
 				WhatsAppShare();
 				break;
 			case R.id.FBShareButton:
+				sendAnalyticsEvent("share","share","Facebook");
 				fbShare();
 				break;
 	 }
@@ -274,6 +292,19 @@ public class PajaCompleted extends FragmentActivity implements ConnectionCallbac
 			MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.open);
 			mp.start();
 		}
+	
+	public void sendAnalyticsEvent (String category, String action, String label){
+		// Get tracker.
+	    Tracker t = ((fApplication) this.getApplication()).getTracker(
+	        TrackerName.APP_TRACKER);
+	    // Build and send an Event.
+	    t.send(new HitBuilders.EventBuilder()
+	        .setCategory(category)
+	        .setAction(action)
+	        .setLabel(label)
+	        .build());
+	}
+	
 	
 	/**
 

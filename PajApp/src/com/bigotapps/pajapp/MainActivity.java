@@ -35,9 +35,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigotapps.pajapp.fApplication.TrackerName;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 
 public class MainActivity extends Activity implements SensorEventListener {
@@ -140,6 +144,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
+		//ANALYTICS: Get a Tracker (should auto-report)
+        ((fApplication) getApplication()).getTracker(fApplication.TrackerName.APP_TRACKER);
+        
 		 requestWindowFeature(Window.FEATURE_NO_TITLE);
 	        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 	                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -232,32 +239,29 @@ public class MainActivity extends Activity implements SensorEventListener {
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch(item.getItemId()){
-		case R.id.change_hand:
-			changeHands();
-			return true ;
-		case R.id.action_settings:
-			goSettings();
-			return true ;
-		case R.id.view_badges:
-			goGallery();
-			return true ;
-		case R.id.forcePajaComplete:
-			endPaja();
-			return true ;
-		case R.id.getAllBadges:
-			getAllBadges();
-			return true ;
-		case R.id.badgeGalleryDebug:
-			goGallery();
-			return true ;
-		case R.id.view_credits:
-			goCredits();
-			return true ;
-		case R.id.change_back:
-			changeBackground();
-			return true ;
-		default:
-			return false;
+			case R.id.action_settings:
+				goSettings();
+				return true ;
+			case R.id.view_badges:
+				goGallery();
+				return true ;
+			case R.id.forcePajaComplete:
+				endPaja();
+				return true ;
+			case R.id.getAllBadges:
+				getAllBadges();
+				return true ;
+			case R.id.badgeGalleryDebug:
+				goGallery();
+				return true ;
+			case R.id.view_credits:
+				goCredits();
+				return true ;
+			case R.id.change_back:
+				changeBackground();
+				return true ;
+			default:
+				return false;
 		}
 	}
 
@@ -276,6 +280,27 @@ public class MainActivity extends Activity implements SensorEventListener {
 	    mSensorManager.unregisterListener(this);
 	  }
 
+  @Override
+    public void onStart() {
+        super.onStart();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+  
+  @Override
+  	public void onStop() {
+      super.onStop();
+    //Get an Analytics tracker to report app stops & uncaught exceptions etc.
+      GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+  
+  @Override
+	public void onDestroy() {
+    super.onDestroy();
+  //Get an Analytics tracker to report app stops & uncaught exceptions etc.
+    GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+  
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
@@ -313,6 +338,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 					if(delay_golpe<painThresold&&!IS_DOWN){	//Pain if freq is too high		
 						if (delay_golpe!=previousLastChange){
 							painCount++;
+							sendAnalyticsEvent("game","penalty","pain",Long.valueOf(delay_golpe));
 							Log.w("golpe","PAIN --- Delay: "+String.valueOf(delay_golpe)+"   Threshold: "+String.valueOf(painThresold));
 						 	//Progress penalty for Pain activation
 					    	soundPool.play(soundId2,volume,volume,1,0,1.3f);
@@ -449,11 +475,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void changeLevel(int l){
     	//the paja is over
     	if(level+l==5){
+    		sendAnalyticsEvent("game","fApp completed","fApp completed",Long.valueOf(score));
     		endPaja();
     		Log.i("level", "paja ended");
     	}
     	else{
     		if(l<0&&level>1){
+    			sendAnalyticsEvent("game","level down","from level "+String.valueOf(level),Long.valueOf(level));
 	    		Toast.makeText(this, "level down", Toast.LENGTH_SHORT).show();
 	    		Log.i("level","reached 0 out of decay or pain => level down");
 	    			level=level+l;
@@ -467,9 +495,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 		    		score=Math.min(score,lastSavedScore[level-1]); //score accumulated at failed level is lost
 		    		progress=progressGoal*0.7f;
 		    		levelText.setText(String.valueOf(level));
-		    		
 	    			}
 	    	else if(l>=0){//level up
+	    			sendAnalyticsEvent("game","level up","to level "+String.valueOf(level+l),Long.valueOf(level+l));
 		    		level=level+l;
 		    		progressGoal=fappLevels[level-1].getProgressGoal();
 		    		decay_speed=fappLevels[level-1].getDecaySpeed();
@@ -486,18 +514,7 @@ public class MainActivity extends Activity implements SensorEventListener {
   
 	}
 	
-    public void changeHands(){
-    	/*
-    	View hand = findViewById(R.id.ImageHand);
-    	ImageView iv = (ImageView) hand;
-    	if(RIGHT_HAND){
-    		iv.setImageResource(R.drawable.openhandleft);}
-    	else
-    		{iv.setImageResource(R.drawable.openhandright);}
-    	
-    	RIGHT_HAND=!RIGHT_HAND;
-    	*/
-    }
+
 
     public void endPaja(){
 		
@@ -758,4 +775,19 @@ public void displayInterstitial() {
   }
   else {Log.i("Ads_greg","display interst - not loaded");}
 }
+
+public void sendAnalyticsEvent (String category, String action, String label, long value){
+	// Get tracker.
+    Tracker t = ((fApplication) this.getApplication()).getTracker(
+        TrackerName.APP_TRACKER);
+    // Build and send an Event.
+    t.send(new HitBuilders.EventBuilder()
+        .setCategory(category)
+        .setAction(action)
+        .setLabel(label)
+        .setValue(value)
+        .build());
+
+}
+
 }

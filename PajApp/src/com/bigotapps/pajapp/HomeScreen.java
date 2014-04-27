@@ -14,6 +14,11 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.bigotapps.pajapp.fApplication.TrackerName;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 public class HomeScreen extends FragmentActivity {
 	
 	public MediaPlayer mp;
@@ -33,6 +38,9 @@ public class HomeScreen extends FragmentActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+      //ANALYTICS: Get a Tracker (should auto-report)
+        ((fApplication) getApplication()).getTracker(fApplication.TrackerName.APP_TRACKER);
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
@@ -121,6 +129,28 @@ public class HomeScreen extends FragmentActivity {
         super.onResume();
         mDrawerLayout.closeDrawers();
 	}
+	
+	@Override
+    public void onStart() {
+        super.onStart();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
+	@Override
+    public void onStop() {
+        super.onStop();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+	
+	@Override
+	public void onDestroy() {
+    super.onDestroy();
+  //Get an Analytics tracker to report app stops & uncaught exceptions etc.
+    GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+	
 	public void onClick(View view){
 		 switch(view.getId()){
 			case R.id.settingsButton:
@@ -139,25 +169,32 @@ public class HomeScreen extends FragmentActivity {
 				fakePaja();
 				break;
 			case R.id.fappButtonCredits:
+				sendAnalyticsEvent("game","start","default level");
 				startPaja(1);
 				break;
 			case R.id.buttonLevel1:
+				sendAnalyticsEvent("game","start","level 1");
 				startPaja(1);
 				break;
 			case R.id.buttonLevel2:
+				sendAnalyticsEvent("game","start","level 2");
 				startPaja(2);
 				break;
 			case R.id.buttonLevel3:
+				sendAnalyticsEvent("game","start","level 3");
 				startPaja(3);
 				break;
 			case R.id.buttonLevel4:
+				sendAnalyticsEvent("game","start","level 4");
 				startPaja(4);
 				break;
 			case R.id.buttonLevel5:
+				sendAnalyticsEvent("game","start","level 5");
 				startPaja(5);
 				break;
 	 }
 }
+	
 	
 	
 	 public void startPaja(int difficulty){
@@ -224,6 +261,19 @@ public class HomeScreen extends FragmentActivity {
        }
 	
     }
+	
+	public void sendAnalyticsEvent (String category, String action, String label){
+		// Get tracker.
+	    Tracker t = ((fApplication) this.getApplication()).getTracker(
+	        TrackerName.APP_TRACKER);
+	    // Build and send an Event.
+	    t.send(new HitBuilders.EventBuilder()
+	        .setCategory(category)
+	        .setAction(action)
+	        .setLabel(label)
+	        .build());
+
+	}
 	
 }
 	
